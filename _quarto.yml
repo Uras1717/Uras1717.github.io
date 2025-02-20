@@ -10,8 +10,8 @@ website:
         href: about.html
       - text: "Data Visualization"
         menu: 
-         - text: "Mario Kart"
-           href: mariokart.html
+         - text: "Space Objects"
+           href: SpaceObjects.html
          - text: "Campus Pride Index"
            href: pride.html
 

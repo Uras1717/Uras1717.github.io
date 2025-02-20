@@ -2,7 +2,7 @@
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "Data Visualization",
     "section": "",
     "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
@@ -12,5 +12,12 @@
     "title": "Uras Uyal",
     "section": "",
     "text": "Welcome to Uras Uyal’s website! Uras is a freshman at Pomona College intending to major in Mathematics and Computer Science, and considering a minor in either Data Science or Physics. He is also interested in Geography, History, and Music as side hobbies."
+  },
+  {
+    "objectID": "SpaceObjects.html",
+    "href": "SpaceObjects.html",
+    "title": "Objects in Space",
+    "section": "",
+    "text": "This mini-project analyzes trends in number of objects Russia and China have launched into space since 1957. Data is provided by the TidyTuesday library, which accessed the specific dataset from the United Nations Office for Outer Space Affairs (2024).\n\nlibrary(tidyverse)\nlibrary(tidytuesdayR)\nlibrary(ggplot2)\ntuesdata &lt;- tidytuesdayR::tt_load('2024-04-23')\ntuesdata &lt;- tidytuesdayR::tt_load(2024, week = 17)\nouter_space_objects &lt;- tuesdata$outer_space_objects\n\n\nouter_space_objects_filtered &lt;- filter(outer_space_objects, Entity == \"China\" | Entity == \"Russia\")\n                                       \nggplot(outer_space_objects_filtered, aes(x = Year, y = num_objects, color = Entity)) +\n  geom_line(size = 1) + \n  geom_point(size = 2) +  \n  labs(title = \"Number of Space Objects Launched by China vs. that of Russia\",\n       subtitle = \"A comparison of space activity since the 1950s\",\n       x = \"Year\", \n       y = \"Number of Space Objects Launched\",\n       color = \"Country\",\n       shape = \"Country\") +\n  theme_gray()\n\n\n\n\n\n\n\n\nAbove is a graph of number of objects sent into space by China vs. Russia from 1957 until 2023. Between the 1960s and 2000s, Russia was quite successful in their space launches, however, through the end of this timeframe, their space launches per year started to decrease. The rise in their space launches coincided with the Cold War, and the decline coincided with the dissolution of the Soviet Union in the early 1990s. We can see that in the 1950s and 1960s, China sent no objects into space but as mass education and technology developed in China, it was gradually be able to send objects into space, taking over the lead from Russia in the mid-2010s. Russia’s rise from the 1960s to the 1980s looks sort of logistical, whereas China’s rise since the 1990s looks more exponential, however, it is too early to decide. The causes of these could be the major reasons behind space launches: militaristic and governmental reasons vs. more commercial oriented government backed reasons in Russia and China’s cases respectively."
   }
 ]

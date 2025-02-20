@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Uras Uyal">
+<meta name="dcterms.date" content="2025-02-19">
+<meta name="description" content="An analysis of objects launched into outer space by country by year, provided by TidyTuesday">
 
-<title>Data Visualization – My phenomenal first website!</title>
+<title>Objects in Space – My phenomenal first website!</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -123,7 +126,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About Me</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -132,8 +135,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-data-visualization">    
         <li>
-    <a class="dropdown-item" href="./mariokart.html">
- <span class="dropdown-text">Mario Kart</span></a>
+    <a class="dropdown-item" href="./SpaceObjects.html">
+ <span class="dropdown-text">Space Objects</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./pride.html">
@@ -160,14 +163,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Data Visualization</h1>
+<h1 class="title">Objects in Space</h1>
 </div>
 
+<div>
+  <div class="description">
+    <p>An analysis of objects launched into outer space by country by year, provided by TidyTuesday</p>
+  </div>
+</div>
 
 
 <div class="quarto-title-meta column-page">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Uras Uyal </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 19, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -177,13 +197,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>About this site</p>
+<p>This mini-project analyzes trends in number of objects Russia and China have launched into space since 1957. Data is provided by the TidyTuesday library, which accessed the specific dataset from the United Nations Office for Outer Space Affairs (2024).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="st">'2024-04-23'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="dv">2024</span>, <span class="at">week =</span> <span class="dv">17</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>outer_space_objects <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>outer_space_objects</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>outer_space_objects_filtered <span class="ot">&lt;-</span> <span class="fu">filter</span>(outer_space_objects, Entity <span class="sc">==</span> <span class="st">"China"</span> <span class="sc">|</span> Entity <span class="sc">==</span> <span class="st">"Russia"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                                       </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(outer_space_objects_filtered, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> num_objects, <span class="at">color =</span> Entity)) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span>  </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Space Objects Launched by China vs. that of Russia"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"A comparison of space activity since the 1950s"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Space Objects Launched"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Country"</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">shape =</span> <span class="st">"Country"</span>) <span class="sc">+</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_gray</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="SpaceObjects_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
+</div>
+<p>Above is a graph of number of objects sent into space by China vs.&nbsp;Russia from 1957 until 2023. Between the 1960s and 2000s, Russia was quite successful in their space launches, however, through the end of this timeframe, their space launches per year started to decrease. The rise in their space launches coincided with the Cold War, and the decline coincided with the dissolution of the Soviet Union in the early 1990s. We can see that in the 1950s and 1960s, China sent no objects into space but as mass education and technology developed in China, it was gradually be able to send objects into space, taking over the lead from Russia in the mid-2010s. Russia’s rise from the 1960s to the 1980s looks sort of logistical, whereas China’s rise since the 1990s looks more exponential, however, it is too early to decide. The causes of these could be the major reasons behind space launches: militaristic and governmental reasons vs.&nbsp;more commercial oriented government backed reasons in Russia and China’s cases respectively.</p>
 
 
 
