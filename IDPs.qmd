@@ -1,7 +1,7 @@
 ---
 title: "IDPs"
 description: |
-  An analysis of objects launched into outer space by country by year, provided by TidyTuesday
+  An analysis of Internally Displaced People in 2020, provided by TidyTuesday
 author: Uras Uyal
 date: February 19, 2025
 format: html
