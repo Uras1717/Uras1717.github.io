@@ -7,7 +7,7 @@ website:
   navbar:
     left: 
       - text: "Home"
-        href: inex.qmd
+        href: index.qmd
       - text: "Data Visualization"
         menu: 
          - text: "Space Objects"
