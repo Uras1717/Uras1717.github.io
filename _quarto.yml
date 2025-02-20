@@ -3,9 +3,11 @@ project:
   output-dir: docs
 
 website:
-  title: "My phenomenal first website!"
+  title: "Uras Uyal"
   navbar:
     left: 
+      - text: "Home"
+        href: inex.qmd
       - text: "Data Visualization"
         menu: 
          - text: "Space Objects"
