@@ -7,8 +7,8 @@ website:
   navbar:
     left: 
       - text: "Home"
-        href: index.qmd
-      - text: "Data Visualization"
+        href: index.html
+      - text: "Data Viz"
         menu: 
          - text: "Space Objects"
            href: SpaceObjects.html
