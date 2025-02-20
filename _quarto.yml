@@ -6,12 +6,10 @@ website:
   title: "My phenomenal first website!"
   navbar:
     right: 
-      - text: "About Me"
-        href: about.html
       - text: "Data Visualization"
         menu: 
          - text: "Space Objects"
-           href: SpaceObjects.qmd
+           href: SpaceObjects.html
          - text: "Campus Pride Index"
            href: SecondData.html
 
