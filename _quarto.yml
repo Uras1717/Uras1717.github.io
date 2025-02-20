@@ -12,7 +12,7 @@ website:
         menu: 
          - text: "Space Objects"
            href: SpaceObjects.html
-         - text: "Internally Displaced People"
+         - text: "Internally Displaced People (IDPs)"
            href: IDPs.html
 
 format:
