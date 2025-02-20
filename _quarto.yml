@@ -12,8 +12,8 @@ website:
         menu: 
          - text: "Space Objects"
            href: SpaceObjects.html
-         - text: "Campus Pride Index"
-           href: SecondData.html
+         - text: "Internally Displaced People"
+           href: IDPs.html
 
 format:
   html:

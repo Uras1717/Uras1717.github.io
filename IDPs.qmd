@@ -1,0 +1,45 @@
+---
+title: "IDPs"
+description: |
+  An analysis of objects launched into outer space by country by year, provided by TidyTuesday
+author: Uras Uyal
+date: February 19, 2025
+format: html
+execute: 
+  warning: false
+  message: false
+---
+
+This mini-project analyzes the number of Internally Displaced People (IDPs) in 2020 in countries which had more than 500000 of them. Data is provided by the TidyTuesday library, which compiled the data from multiple UN agencies and the the Internal Displacement Monitoring Centre (IDMC).
+
+```{r}
+library(tidyverse)
+library(tidytuesdayR)
+library(ggplot2)
+tuesdata <- tidytuesdayR::tt_load('2023-08-22')
+population <- tuesdata$population
+
+filterdata <- population |>
+  filter(idps >= 500000, year == 2020)
+
+ggplot(filterdata, aes(x = reorder(coo_name, idps), y = idps)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of Internally Displaced People per Country in 2020",
+       subtitle = "A comparison of IDPs over 500,000 people per country in 2020",
+       x = "Country", 
+       y = "Number of IDPs") +
+  theme_gray() + coord_flip()
+
+```
+
+Above is a graph showing different numbers for IDPs (Internally Displaced Peoples) in 2020 across the countries with the highest numbers and a minimum of 500000 IDPs. We can see many countries which have a big refugee exflux to other countries (such as Syria and Afghanistan) are in the list, but more commonly we can see countries with internal conflicts which are not presently at the scale of a civil war. We can also see countries fighting others, such as in the case for Ukraine and Azerbaijan. Some root causes for IDPs include internal and external war as stated, but also include food shortages, local violence, water shortage, climate change, past wars' effects, government change, and others. The data set originally includes other information, such as origin countries of refugees, their destination countries, etc.
+
+**Sources:**
+
+**TidyTuesday Source:** https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-08-22/readme.md
+
+**The Original Source of the Data:** The TidyTuesday dataset does not provide specific links to its data sources, but the most precise sources they mention are as following:
+"Data from UNHCR’s annual statistical activities dating back to 1951.
+Data from the United Nations Relief and Works Agency for Palestine Refugees in the Near East (UNRWA), specifically for registered Palestine refugees under UNRWA’s mandate.
+Data from the Internal Displacement Monitoring Centre (IDMC) on people displaced within their country due to conflict or violence."
+

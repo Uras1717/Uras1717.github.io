@@ -17,7 +17,6 @@ library(tidyverse)
 library(tidytuesdayR)
 library(ggplot2)
 tuesdata <- tidytuesdayR::tt_load('2024-04-23')
-tuesdata <- tidytuesdayR::tt_load(2024, week = 17)
 outer_space_objects <- tuesdata$outer_space_objects
 
 
@@ -35,7 +34,7 @@ ggplot(outer_space_objects_filtered, aes(x = Year, y = num_objects, color = Enti
   theme_gray()
 ```
 
-Above is a graph of number of objects sent into space by China vs. Russia from 1957 until 2023. Between the 1960s and 2000s, Russia was quite successful in their space launches, however, through the end of this timeframe, their space launches per year started to decrease. The rise in their space launches coincided with the Cold War, and the decline coincided with the dissolution of the Soviet Union in the early 1990s. We can see that in the 1950s and 1960s, China sent no objects into space but as mass education and technology developed in China, it was gradually be able to send objects into space, taking over the lead from Russia in the mid-2010s. Russia's rise from the 1960s to the 1980s looks sort of logistical, whereas China's rise since the 1990s looks more exponential, however, it is too early to decide. The causes of these could be the major reasons behind space launches: militaristic and governmental reasons vs. more commercial oriented government backed reasons in Russia and China's cases respectively.
+Above is a graph of number of objects sent into space by China vs. Russia from 1957 until 2023. Between the 1960s and 2000s, Russia was quite successful in their space launches, however, through the end of this timeframe, their space launches per year started to decrease. The rise in their space launches coincided with the Cold War, and the decline coincided with the dissolution of the Soviet Union in the early 1990s. We can see that in the 1950s and 1960s, China sent no objects into space but as mass education and technology developed in China, it was gradually be able to send objects into space, taking over the lead from Russia in the mid-2010s. Russia's rise from the 1960s to the 1980s looks sort of logistical, whereas China's rise since the 1990s looks more exponential, however, it is too early to decide. The causes of these could be the major reasons behind space launches: militaristic and governmental reasons vs. more commercial oriented government backed reasons in Russia and China's cases respectively. The data set originally includes other countries and organizations around the world as well.
 
 
 **Sources:**
