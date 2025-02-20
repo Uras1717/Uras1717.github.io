@@ -3,12 +3,17 @@ project:
   output-dir: docs
 
 website:
-  title: "Uras Uyal"
+  title: "My phenomenal first website!"
   navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+    right: 
+      - text: "About Me"
+        href: about.html
+      - text: "Data Visualization"
+        menu: 
+         - text: "Mario Kart"
+           href: mariokart.html
+         - text: "Campus Pride Index"
+           href: pride.html
 
 format:
   html:
