@@ -1,6 +1,6 @@
 ---
 title: "Uras Uyal"
-1image: headshot.jpeg
+1image: headshot.jpg
 2toc: false
 about: 
   template: jolla
@@ -12,7 +12,7 @@ about:
     - text: GitHub
       href: https://github.com/Uras1717
     - text: Email
-      href: uudc2024@mymail.pomona.edu
+      href: mailto:uudc2024@mymail.pomona.edu
     - text: Website GitHub Repo
       href: https://github.com/Uras1717/Uras1717.github.io
 ---
