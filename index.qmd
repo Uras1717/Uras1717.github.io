@@ -1,7 +1,7 @@
 ---
 title: "Uras Uyal"
-1image: headshot.jpeg
-2toc: false
+image: headshot.jpeg
+toc: false
 about: 
   template: jolla
   image-shape: round
