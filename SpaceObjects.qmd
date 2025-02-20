@@ -3,7 +3,7 @@ title: "Objects in Space"
 description: |
   An analysis of objects launched into outer space by country by year, provided by TidyTuesday
 author: Uras Uyal
-date: Febuary 19, 2025
+date: February 19, 2025
 format: html
 execute: 
   warning: false
