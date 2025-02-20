@@ -1,11 +1,20 @@
 ---
-title: "Uras1717.github.io"
+title: "Uras Uyal"
+1image: headshot.jpeg
+2toc: false
+about: 
+  template: jolla
+  image-shape: round
+  image-width: 17em
+  links:
+    - text: LinkedIn
+      href: https://www.linkedin.com/in/uras-uyal/
+    - text: GitHub
+      href: https://github.com/Uras1717
+    - text: Email
+      href: uudc2024@mymail.pomona.edu
+    - text: Website GitHub Repo
+      href: https://github.com/Uras1717/Uras1717.github.io
 ---
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+Welcome to Uras Uyal's website! Uras is a freshman at Pomona College intending to major in Mathematics and Computer Science, and considering a minor in either Data Science of Physics. He is also interested in Geography, History, and Music as side hobbies.
