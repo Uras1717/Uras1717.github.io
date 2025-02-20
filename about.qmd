@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "Data Visualization"
 ---
 
 About this site
