@@ -13,7 +13,7 @@ website:
          - text: "Space Objects"
            href: SpaceObjects.html
          - text: "Campus Pride Index"
-           href: pride.html
+           href: SecondData.html
 
 format:
   html:
