@@ -5,7 +5,7 @@ project:
 website:
   title: "My phenomenal first website!"
   navbar:
-    right: 
+    left: 
       - text: "Data Visualization"
         menu: 
          - text: "Space Objects"
