@@ -11,7 +11,7 @@ website:
       - text: "Data Visualization"
         menu: 
          - text: "Space Objects"
-           href: SpaceObjects.html
+           href: SpaceObjects.qmd
          - text: "Campus Pride Index"
            href: SecondData.html
 
