@@ -14,6 +14,8 @@ website:
            href: SpaceObjects.html
          - text: "Internally Displaced People (IDPs)"
            href: IDPs.html
+      - text: "Songs Text Analysis"
+        href: SongsAnalysis.html
 
 format:
   html:

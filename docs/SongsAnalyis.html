@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Uras Uyal">
-<meta name="dcterms.date" content="2025-02-19">
-<meta name="description" content="An analysis of Internally Displaced People in 2020, provided by TidyTuesday">
+<meta name="dcterms.date" content="2025-03-05">
+<meta name="description" content="An analysis of a dataset of songs as found on Spotify">
 
-<title>IDPs – Uras Uyal</title>
+<title>Songs Text Analysis – Uras Uyal</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,40 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -167,12 +133,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">IDPs</h1>
+<h1 class="title">Songs Text Analysis</h1>
 </div>
 
 <div>
   <div class="description">
-    <p>An analysis of Internally Displaced People in 2020, provided by TidyTuesday</p>
+    <p>An analysis of a dataset of songs as found on Spotify</p>
   </div>
 </div>
 
@@ -189,7 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 19, 2025</p>
+      <p class="date">March 5, 2025</p>
     </div>
   </div>
   
@@ -201,36 +167,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This mini-project analyzes the number of Internally Displaced People (IDPs) in 2020 in countries which had more than 500000 of them. Data is provided by the TidyTuesday library, which compiled the data from multiple UN agencies and the the Internal Displacement Monitoring Centre (IDMC).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="st">'2023-08-22'</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>population <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>population</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>filterdata <span class="ot">&lt;-</span> population <span class="sc">|&gt;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(idps <span class="sc">&gt;=</span> <span class="dv">500000</span>, year <span class="sc">==</span> <span class="dv">2020</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(filterdata, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(coo_name, idps), <span class="at">y =</span> idps)) <span class="sc">+</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Internally Displaced People per Country in 2020"</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"A comparison of IDPs over 500,000 people per country in 2020"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Country"</span>, </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of IDPs"</span>) <span class="sc">+</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_gray</span>() <span class="sc">+</span> <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="IDPs_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Above is a graph showing different numbers for IDPs (Internally Displaced Peoples) in 2020 across the countries with the highest numbers and a minimum of 500000 IDPs. We can see many countries which have a big refugee exflux to other countries (such as Syria and Afghanistan) are in the list, but more commonly we can see countries with internal conflicts which are not presently at the scale of a civil war. We can also see countries fighting others, such as in the case for Ukraine and Azerbaijan. Some root causes for IDPs include internal and external war as stated, but also include food shortages, local violence, water shortage, climate change, past wars’ effects, government change, and others. The data set originally includes other information, such as origin countries of refugees, their destination countries, etc.</p>
-<p><strong>Sources:</strong></p>
-<p><strong>TidyTuesday Source:</strong> https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-08-22/readme.md</p>
-<p><strong>The Original Source of the Data:</strong> The TidyTuesday dataset does not provide specific links to its data sources, but the most precise sources they mention are as following: “Data from UNHCR’s annual statistical activities dating back to 1951. Data from the United Nations Relief and Works Agency for Palestine Refugees in the Near East (UNRWA), specifically for registered Palestine refugees under UNRWA’s mandate. Data from the Internal Displacement Monitoring Centre (IDMC) on people displaced within their country due to conflict or violence.”</p>
+<p>{r}´´´ tuesdata &lt;- tidytuesdayR::tt_load(‘2020-01-21’) tuesdata &lt;- tidytuesdayR::tt_load(2020, week = 4) spotify_songs &lt;- tuesdata$spotify_songs</p>
 
 
 

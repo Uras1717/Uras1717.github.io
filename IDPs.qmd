@@ -38,8 +38,4 @@ Above is a graph showing different numbers for IDPs (Internally Displaced People
 
 **TidyTuesday Source:** https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-08-22/readme.md
 
-**The Original Source of the Data:** The TidyTuesday dataset does not provide specific links to its data sources, but the most precise sources they mention are as following:
-"Data from UNHCR’s annual statistical activities dating back to 1951.
-Data from the United Nations Relief and Works Agency for Palestine Refugees in the Near East (UNRWA), specifically for registered Palestine refugees under UNRWA’s mandate.
-Data from the Internal Displacement Monitoring Centre (IDMC) on people displaced within their country due to conflict or violence."
-
+**The Original Source of the Data:** The TidyTuesday dataset does not provide specific links to its data sources, but the most precise sources they mention are as following: "Data from UNHCR’s annual statistical activities dating back to 1951. Data from the United Nations Relief and Works Agency for Palestine Refugees in the Near East (UNRWA), specifically for registered Palestine refugees under UNRWA’s mandate. Data from the Internal Displacement Monitoring Centre (IDMC) on people displaced within their country due to conflict or violence."
