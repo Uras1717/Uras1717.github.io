@@ -33,5 +33,12 @@
     "title": "Songs Text Analysis",
     "section": "",
     "text": "{r}´´´ tuesdata &lt;- tidytuesdayR::tt_load(‘2020-01-21’) tuesdata &lt;- tidytuesdayR::tt_load(2020, week = 4) spotify_songs &lt;- tuesdata$spotify_songs"
+  },
+  {
+    "objectID": "SongsAnalysis.html",
+    "href": "SongsAnalysis.html",
+    "title": "Songs Text Analysis",
+    "section": "",
+    "text": "tuesdata &lt;- tidytuesdayR::tt_load('2020-01-21') \ntuesdata &lt;- tidytuesdayR::tt_load(2020, week = 4)\nspotify_songs &lt;- tuesdata$spotify_songs\nlibrary(ggplot2)\n\n\nlibrary(dplyr)\n\navg_songs_per_album &lt;- spotify_songs |&gt;\n  group_by(playlist_genre, track_album_id) |&gt;\n  summarise(songs_per_album = n()) |&gt;\n  filter(songs_per_album &gt; 1) |&gt;\n  group_by(playlist_genre) |&gt;\n  summarise(avg_songs_per_album = mean(songs_per_album))\n\nprint(avg_songs_per_album)\n\n# A tibble: 6 × 2\n  playlist_genre avg_songs_per_album\n  &lt;chr&gt;                        &lt;dbl&gt;\n1 edm                           2.42\n2 latin                         2.82\n3 pop                           2.76\n4 r&b                           3.09\n5 rap                           3.16\n6 rock                          2.95\n\n\n\nsongs_per_album_by_genre &lt;- spotify_songs |&gt;\n  group_by(playlist_genre, track_album_id) |&gt;\n  summarise(songs_per_album = n()) |&gt;\n  filter(songs_per_album &gt; 1)\n\nggplot(songs_per_album_by_genre, aes(x = songs_per_album, fill = playlist_genre)) +\n  geom_bar(aes(y = ..count..), position = \"dodge\", stat = \"count\", show.legend = TRUE) +\n  labs(x = \"Number of Songs per Album\", y = \"Number of Albums\", \n       title = \"Albums by Number of Songs Included\") +\n  scale_fill_manual(values = c(\"red\",\"green\",\"blue\",\"orange\",\"purple\",\"cyan\")) + \n  scale_x_continuous(limits = c(1.5, 8), breaks = 0:8)"
   }
 ]
