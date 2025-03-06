@@ -7,7 +7,7 @@ date: March 5, 2025
 format: 
   html:
     code-fold: true
-    code-summary: "Show source code"
+    code-summary: "Show source code" 
 execute: 
   warning: false
   message: false
