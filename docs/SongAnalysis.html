@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Uras Uyal">
-<meta name="dcterms.date" content="2025-02-19">
-<meta name="description" content="An analysis of objects launched into outer space by country by year, provided by TidyTuesday">
+<meta name="dcterms.date" content="2025-03-05">
+<meta name="description" content="An analysis of a dataset of songs as found on Spotify">
 
-<title>Objects in Space – Uras Uyal</title>
+<title>Songs Text Analysis – Uras Uyal</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -145,7 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="./SongAnalysis.html"> 
+    <a class="nav-link active" href="./SongAnalysis.html" aria-current="page"> 
 <span class="menu-text">Songs Text Analysis</span></a>
   </li>  
 </ul>
@@ -159,25 +159,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#looking-at-trends-of-the-expected-number-of-songs-per-album" id="toc-looking-at-trends-of-the-expected-number-of-songs-per-album" class="nav-link active" data-scroll-target="#looking-at-trends-of-the-expected-number-of-songs-per-album">Looking at trends of the expected number of songs per album</a></li>
+  <li><a href="#looking-at-trends-of-song-titles-lengths-and-genericnesses-over-time" id="toc-looking-at-trends-of-song-titles-lengths-and-genericnesses-over-time" class="nav-link" data-scroll-target="#looking-at-trends-of-song-titles-lengths-and-genericnesses-over-time">Looking at trends of song titles’ lengths and genericnesses over time</a></li>
+  <li><a href="#source-used" id="toc-source-used" class="nav-link" data-scroll-target="#source-used">Source Used</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Objects in Space</h1>
+<h1 class="title">Songs Text Analysis</h1>
 </div>
 
 <div>
   <div class="description">
-    <p>An analysis of objects launched into outer space by country by year, provided by TidyTuesday</p>
+    <p>An analysis of a dataset of songs as found on Spotify</p>
   </div>
 </div>
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta column-page-left">
 
     <div>
     <div class="quarto-title-meta-heading">Author</div>
@@ -189,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 19, 2025</p>
+      <p class="date">March 5, 2025</p>
     </div>
   </div>
   
@@ -201,42 +209,151 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This mini-project analyzes trends in number of objects Russia and China have launched into space since 1957. Data is provided by the TidyTuesday library, which accessed the specific dataset from the United Nations Office for Outer Space Affairs (2024) helped by Our World in Data.</p>
+<p>We will be analyzing a data set of Spotify songs up to 2020. The data set source can be found at the very bottom of the page. We will be looking at trends in how many songs there is expected to be in a given album depending on genre, and will be analyzing how song titles changed over the decades. To start, we import our data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="st">'2024-04-23'</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>outer_space_objects <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>outer_space_objects</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>outer_space_objects_filtered <span class="ot">&lt;-</span> <span class="fu">filter</span>(outer_space_objects, Entity <span class="sc">==</span> <span class="st">"China"</span> <span class="sc">|</span> Entity <span class="sc">==</span> <span class="st">"Russia"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                                       </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(outer_space_objects_filtered, <span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> num_objects, <span class="at">color =</span> Entity)) <span class="sc">+</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span>  </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Number of Space Objects Launched by China vs. that of Russia"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"A comparison of space activity since the 1950s"</span>,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>, </span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Space Objects Launched"</span>,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Country"</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">shape =</span> <span class="st">"Country"</span>) <span class="sc">+</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_gray</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Show source code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="st">'2020-01-21'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="dv">2020</span>, <span class="at">week =</span> <span class="dv">4</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>spotify_songs <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>spotify_songs</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="looking-at-trends-of-the-expected-number-of-songs-per-album" class="level1">
+<h1>Looking at trends of the expected number of songs per album</h1>
+<p>First, let’s take a look at the average number of songs per album. A lot of artists put up “singles”; so, in order to remove them, we filter for number of songs over 1 per album. Oftentimes, the most mainstream albums come with 7 to 12 or 13 songs per album. However, the data shows that less number of songs is more common for albums. The most common instance is 2 songs per album, then 3, etc.. This could be caused by smaller artists also being featured on Spotify and them having usually no restriction on a minimum amount of songs per album, or having any concern to release a bunch of songs at one time (they can do this over time). We see that all genres are not too extremely off from each other in songs per album; however, we see noticeable differences. Where EDM has about 2.42 songs per album, rap has 3.15. This may possibly be caused by the more vibrant and less-lyrics based nature of EDM opposed to the lyrics-heavy nature of rap. Lack of lyrics may possibly constitute in having less songs in a given album as it is harder to produce unique music with the element of just electronic music and the absence of words. EDM also tends to have the highest number of covers out of any genre as it is easier to mix-match, partly due to its relative lack of lyrics and technological produce again; where covers are only popular with popular songs, automatically making less-popular songs less covered, meaning less songs per a given album.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show source code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>avg_songs_per_album <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre, track_album_id) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">songs_per_album =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(songs_per_album <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_songs_per_album =</span> <span class="fu">mean</span>(songs_per_album))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(avg_songs_per_album)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  playlist_genre avg_songs_per_album
+  &lt;chr&gt;                        &lt;dbl&gt;
+1 edm                           2.42
+2 latin                         2.82
+3 pop                           2.76
+4 r&amp;b                           3.09
+5 rap                           3.16
+6 rock                          2.95</code></pre>
+</div>
+</div>
+<p>Now, let’s plot the number of songs per album and their instances detailing genres. What this graph tells us different to the data table above is the quickness in decrease of number of instances as number of songs per album increases. Expectedly, EDM, with the red bars, decreases quite fast compared to other genders as we go more right on the x-axis. Rap has quite a slower decreasing curve. Perhaps another color one might catch is orange, which constitutes to R&amp;B, having quite a close curve to that of rap. If we look at our data table above, we see that R&amp;B has a value that is quite close to rap, which fulfills our expectations.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show source code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>songs_per_album_per_genre <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre, track_album_id) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">songs_per_album =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(songs_per_album <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(songs_per_album_per_genre, <span class="fu">aes</span>(<span class="at">x =</span> songs_per_album, <span class="at">fill =</span> playlist_genre)) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">y=</span>..count..), <span class="at">stat =</span> <span class="st">"count"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Number of Songs per Album"</span>, <span class="at">y =</span> <span class="st">"Number of Instances of Albums"</span>, </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Albums by Number of Songs Included"</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="dv">8</span>), <span class="at">breaks =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"red"</span>,<span class="st">"green"</span>,<span class="st">"blue"</span>,<span class="st">"orange"</span>,<span class="st">"purple"</span>,<span class="st">"cyan"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="SpaceObjects_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="SongAnalysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Above is a graph of number of objects sent into space by China vs.&nbsp;Russia from 1957 until 2023. Between the 1960s and 2000s, Russia was quite successful in their space launches, however, through the end of this timeframe, their space launches per year started to decrease. The rise in their space launches coincided with the Cold War, and the decline coincided with the dissolution of the Soviet Union in the early 1990s. We can see that in the 1950s and 1960s, China sent no objects into space but as mass education and technology developed in China, it was gradually be able to send objects into space, taking over the lead from Russia in the mid-2010s. Russia’s rise from the 1960s to the 1980s looks sort of logistical, whereas China’s rise since the 1990s looks more exponential, however, it is too early to decide. The causes of these could be the major reasons behind space launches: militaristic and governmental reasons vs.&nbsp;more commercial oriented government backed reasons in Russia and China’s cases respectively. The data set originally includes other countries and organizations around the world as well.</p>
-<p><strong>Sources:</strong></p>
-<p><strong>TidyTuesday source:</strong> https://github.com/rfordatascience/tidytuesday/blob/main/data/2024/2024-04-23/readme.md</p>
-<p><strong>Data Page:</strong> Annual number of objects launched into space”, part of the following publication: Edouard Mathieu and Max Roser (2022) - “Space Exploration and Satellites”. Data adapted from United Nations Office for Outer Space Affairs. Retrieved from https://ourworldindata.org/grapher/yearly-number-of-objects-launched-into-outer-space</p>
-<p><strong>Dataset:</strong> United Nations Office for Outer Space Affairs (2024) – with major processing by Our World in Data. “Annual number of objects launched into space – UNOOSA” [dataset]. United Nations Office for Outer Space Affairs, “Online Index of Objects Launched into Outer Space” [original data]. Retrieved April 21, 2024 from https://ourworldindata.org/grapher/yearly-number-of-objects-launched-into-outer-space</p>
+</section>
+<section id="looking-at-trends-of-song-titles-lengths-and-genericnesses-over-time" class="level1">
+<h1>Looking at trends of song titles’ lengths and genericnesses over time</h1>
+<p>Now, let’s look at the length of song titles per genre. Here, we look at both a) the number of words in a song’s title by genre, b) the number of characters in a song’s title by genre. Although values are again close, we can see here that rap has both the lowest amount of words and length in terms of characters, and EDM has the highest. Using previous hypotheses, we can hypothesize that since EDM has less songs per album, the titles are more descriptive, the opposite for rap. Another hypothesis is since rap has a lot of words used in the song, the title should be less discriminating to the content, therefore more general, resulting in a shorter title. Again, these are all hypotethical ideas.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show source code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>title_lengths <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(track_name)) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word_count =</span> <span class="fu">str_count</span>(track_name, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>), <span class="at">title_charlength =</span> <span class="fu">str_length</span>(<span class="fu">str_extract_all</span>(track_name,<span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_word_count =</span> <span class="fu">mean</span>(word_count), <span class="at">avg_title_length =</span> <span class="fu">mean</span>(<span class="fu">unlist</span>(title_charlength)), <span class="at">total_songs =</span> <span class="fu">n</span>())</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(title_lengths)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  playlist_genre avg_word_count avg_title_length total_songs
+  &lt;chr&gt;                   &lt;dbl&gt;            &lt;dbl&gt;       &lt;int&gt;
+1 edm                      3.48             29.6        6043
+2 latin                    3.04             25.5        5153
+3 pop                      3.20             26.5        5507
+4 r&amp;b                      3.31             27.0        5431
+5 rap                      2.94             24.3        5743
+6 rock                     3.45             29.4        4951</code></pre>
+</div>
+</div>
+<p>Looking at the number of words in songs over their release year, we can obtain the following graph for songs between 1970 and 2015. If we model with a linear regression line, we can see a stark decrease in word usage over the decades in song titles. A few reasons why this might be are the need for more unique titles as generic titles for songs have already been taken therefore the usage of more unique and concentrated words; the ease of marketing shorter titled songs; the ease of access to songs via web-streaming and industrialization in production processes resulting in the need of less “refined” titles. Either way, according to the data set, the decrease in number of words over the years is evident. From the 4.0 levels in the 1970s, we reach the 3.4 words per title levels in the 2010s. I have omitted pre-1970 and 2015-2020 data due to less data points during those years.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show source code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>songstemp <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(track_name) <span class="sc">&amp;</span> track_name<span class="sc">!=</span><span class="st">""</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">as.numeric</span>(<span class="fu">substr</span>(track_album_release_date, <span class="dv">1</span>,<span class="dv">4</span>)), <span class="at">word_count =</span> <span class="fu">str_count</span>(track_name, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(year) <span class="sc">&amp;</span> year<span class="sc">&gt;=</span><span class="dv">1970</span> <span class="sc">&amp;</span> year<span class="sc">&lt;=</span><span class="dv">2015</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_word_count =</span> <span class="fu">mean</span>(word_count), <span class="at">total_songs =</span> <span class="fu">n</span>())</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(songstemp, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> avg_word_count)) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"darkblue"</span>) <span class="sc">+</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Song Release Year"</span>, <span class="at">y =</span> <span class="st">"Average Word Count in Song Title"</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Average Number Words in Songs vs. their Release Year (1970-2015)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="SongAnalysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, let’s take a look at a generic type of song titles: the word “the” followed by a singular random word (i.e.&nbsp;the song title is two words: “The __“). A famous song that immediately popped into my mind fitting this rule is”The Unforgiven” by Metallica. Let’s now search for the number of songs that fit this rule. We know from a previous data table that the average number of songs per genre is about 5000-6000. This leaves songs with the exact format of “The” and another word at around 1% over most genres. One genre standing out is Latin, which may be caused by Latin songs frequently having non-English therefore non-“The” titles.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show source code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>the_songs <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(track_name)) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">the_anyword =</span> <span class="fu">str_detect</span>(<span class="fu">tolower</span>(track_name), <span class="st">"^the</span><span class="sc">\\</span><span class="st">s{1}</span><span class="sc">\\</span><span class="st">w+$"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(the_anyword) <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre) <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">the_songs_numberof =</span> <span class="fu">n</span>())</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(the_songs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  playlist_genre the_songs_numberof
+  &lt;chr&gt;                       &lt;int&gt;
+1 edm                            59
+2 latin                          14
+3 pop                            55
+4 r&amp;b                            39
+5 rap                            51
+6 rock                           64</code></pre>
+</div>
+</div>
+</section>
+<section id="source-used" class="level1">
+<h1>Source Used</h1>
+<p>Access at: https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-01-21/readme.md. The source states that the data comes from Spotify’s API via the spotifyr package. Authors of the package are Charlie Thompson, Josiah Parry, Donal Phipps, and Tom Wolff. Kaylin Pavlik had a recent blogpost using the audio features to explore and classify songs. She used the spotifyr package to collect about 5000 songs from 6 main categories (EDM, Latin, Pop, R&amp;B, Rap, &amp; Rock) in creation of this data set. h/t to Jon Harmon &amp; Neal Grantham.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
