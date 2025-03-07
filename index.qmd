@@ -17,4 +17,4 @@ about:
       href: https://github.com/Uras1717/Uras1717.github.io
 ---
 
-Welcome to Uras Uyal's website! Uras is a freshman at Pomona College intending to major in Mathematics and Computer Science, and considering a minor in either Data Science or Physics. He is also interested in Geography, History, and Music as side hobbies.
+Welcome to Uras Uyal's website! Uras is a Freshman at Pomona College intending to major in Mathematics and Computer Science, and considering a minor in either Data Science or Physics. He is also interested in Geography, History, and Music as side hobbies.
