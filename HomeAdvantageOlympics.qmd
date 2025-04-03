@@ -1,5 +1,5 @@
 ---
-title: "Home Advantage in Olympics"
+title: "Home Advantage in the Olympics"
 description: |
   A study of whether "Home Advantage" exists for Summer Olympics Hosts
 author: Uras Uyal
