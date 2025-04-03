@@ -16,6 +16,8 @@ website:
            href: IDPs.html
       - text: "Songs Text Analysis" 
         href: SongsAnalysis.html
+      - text: "Olympics Home Advantage"
+        href: HomeAdvantageOlympics.html
 
 format:
   html:

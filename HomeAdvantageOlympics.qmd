@@ -1,0 +1,82 @@
+---
+title: "Objects in Space"
+description: |
+  An analysis of objects launched into outer space by country by year, provided by TidyTuesday
+author: Uras Uyal
+date: April 2, 2025
+format: html
+execute: 
+  warning: false
+  message: false
+---
+
+Hypotheses:
+
+Null Hypothesis: The location where a Summer Olympics takes place does not have an effect on per capita medal wins per participating country.
+
+Alternative Hypothesis: The location where a Summer Olympics takes place does have an effect on per capita medal wins per participating country.
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load('2024-08-06')
+olympics <- tuesdata$olympics
+library(purrr)
+library(tidyverse)
+library(tidytuesdayR)
+library(ggplot2)
+```
+Here is a small snapshot of the data set we are working with:
+
+```{r}
+olympics
+```
+
+Let us first mutate our data set so as to help us in investigating per capita medal wins per participating country, for the Summer Olympics. In this light, we will mutate the data set so that we have a column that has medal wins per participating athlete, so that countries sending more athletes are not advantaged on a per athlete basis. Regarding the weighting of medals, we will count bronze medals as 1 medal point, silver medals as 2, and gold as 3 in order to better highlight a possible advantage, if there is one, that a country might have. No medal (NA) means 0 medal points, and joint medals will be awarded as their respective full medal's medal points to both athletes/teams. Furthermore, we will mutate our data set so that we only analyze Summer Olympics. We will also analyze Olympics from only 1996 in order to sort out discrepancies between teams of the former USSR and only until 2016 as that is what our data set provides us with.
+
+```{r}
+
+# Selecting only Summer Olympics
+olympicsdata <- olympics |>
+  filter(season == "Summer")
+
+# Assigning medal point values
+olympicsdata <- olympicsdata |>
+  mutate(medal_points = case_when(
+    medal == "Gold" ~ 3,
+    medal == "Silver" ~ 2,
+    medal == "Bronze" ~ 1,
+    medal == "NA" ~ 0,
+    TRUE ~ 0
+  ))
+
+#Selecting years from only 1996 to 2016
+olympicsdata <- olympicsdata |>
+  filter(year >= 1996 & year <= 2016)
+
+# Changing city names into their respective countries (as if they were in 2025) so that we can compare teams and countries for home-field advantage
+hostcitytocountry <- function(olympicsdata, city) {
+  hostcitytocountry <- data.frame(
+    city = c("Atlanta", "Sydney", "Athina", "Beijing", "London", "Rio de Janeiro"),
+    country = c("United States", "Australia", "Greece", "China", "United Kingdom", "Brazil"))
+  updatedolympicsdata <- olympicsdata |>
+    left_join(hostcitytocountry, by = setNames("city", city)) |>
+    mutate(!!city := country) |>
+    select(-country) 
+  return(updatedolympicsdata)
+}
+
+olympicsdata <- hostcitytocountry(olympicsdata, "city")
+olympicsdata
+
+```
+
+We now have a data table easier to work with in light of our aim. We will now add a column 
+
+
+
+
+
+
+```
+
+
+
