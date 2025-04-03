@@ -1,7 +1,7 @@
 ---
-title: "Objects in Space"
+title: "Home Advantage in Olympics"
 description: |
-  An analysis of objects launched into outer space by country by year, provided by TidyTuesday
+  A study of whether "Home Advantage" exists for Summer Olympics Hosts
 author: Uras Uyal
 date: April 2, 2025
 format: html
@@ -10,11 +10,19 @@ execute:
   message: false
 ---
 
+# Introduction
+
+This analysis tests whether in the Summer Olympics, on a per athlete basis, a home advantage exists or not. This analysis builds on a TidyTuesday dataset, analyzing the 8 Summer Olympic hosts and their competing teams 7 times abroad and 1 time as host between 1988-2016. By contrasting the variable, average number of medal points per athlete for a given nation, with whether that nation was a host of the Summer Olympics at that instance of competition or not, we draw statistical conclusions regarding if a "Home Advantage" exists for olympic hosts. "Home Advantages" can greatly influence athletic performance and results in competitions. It is important to remember throughout this analysis that our "Home Advantage" is calculated on a per participating athlete basis. In this analysis, we in fact show that a statistical significance of "Home <i>Disadvantage</i>" exists on a <i>per participating athlete</i> basis.
+
+# Hypothesis and Dataset
+
 Hypotheses:
 
-Null Hypothesis: The location where a Summer Olympics takes place does not have an effect on per capita medal wins per participating country.
+Null Hypothesis: Whether a country hosts the Summer Olympics or not does not have an effect on per capita medal wins for that country.
 
-Alternative Hypothesis: The location where a Summer Olympics takes place does have an effect on per capita medal wins per participating country.
+Alternative Hypothesis: Whether a country hosts the Summer Olympics or not does have an effect on per capita medal wins for that country (either positively, resulting in an advantage, or negatively, resulting in a disadvantage).
+
+Our alternative hypothesis is that the null hypothesis is incorrect; however, in order to draw a possible more precise statistical conclusion, in the event our alternative hypothesis is shown to be true, we will also be calculating 2 different p-values in order to conclude if hosting the summer olympics yields better results on a per participating athlete basis or not (not just that it has a statistical significance).
 
 ```{r}
 tuesdata <- tidytuesdayR::tt_load('2024-08-06')
@@ -30,38 +38,32 @@ Here is a small snapshot of the data set we are working with:
 olympics
 ```
 
-Let us first mutate our data set so as to help us in investigating per capita medal wins per participating country, for the Summer Olympics. In this light, we will mutate the data set so that we have a column that has medal wins per participating athlete, so that countries sending more athletes are not advantaged on a per athlete basis. Regarding the weighting of medals, we will count bronze medals as 1 medal point, silver medals as 2, and gold as 3 in order to better highlight a possible advantage, if there is one, that a country might have. No medal (NA) means 0 medal points, and joint medals will be awarded as their respective full medal's medal points to both athletes/teams. Furthermore, we will mutate our data set so that we only analyze Summer Olympics. We will also analyze Olympics from only 1996 in order to sort out discrepancies between teams of the former USSR and only until 2016 as that is what our data set provides us with.
+# Data Mutation
+
+Let us first mutate our data set so as to help us in investigating per capita medal wins per participating country, for the Summer Olympics. In this light, we will mutate the data set so that we have a column that has medal wins per participating athlete, so that countries sending more athletes are not advantaged on a per athlete basis. Regarding the weighting of medals, we will count bronze medals as 1 medal point, silver medals as 2, and gold as 3 in order to better highlight a possible advantage, if there is one, that a country might have. No medal (NA) means 0 medal points, and joint medals will be awarded as their respective full medal's medal points to both athletes/teams. Furthermore, we will mutate our data set so that we only analyze Summer Olympics. We will also analyze Olympics from only 1988 in order to have one instance of hosting per country, as both the 1984 and 1996 Olympics were hosted by the US. We are also doing this as to not go into issues with countries having different names/changing territories. Our data set runs until 2016.
 
 ```{r}
 
 # Selecting only Summer Olympics
 olympicsdata <- olympics |>
-  filter(season == "Summer")
+  filter(season=="Summer")
 
 # Assigning medal point values
 olympicsdata <- olympicsdata |>
-  mutate(medal_points = case_when(
-    medal == "Gold" ~ 3,
-    medal == "Silver" ~ 2,
-    medal == "Bronze" ~ 1,
-    medal == "NA" ~ 0,
-    TRUE ~ 0
-  ))
+  mutate(medal_points = case_when(medal=="Gold" ~ 3, medal=="Silver" ~ 2, medal=="Bronze" ~ 1, medal=="NA" ~ 0, TRUE ~ 0))
 
-#Selecting years from only 1996 to 2016
+#Selecting years from only 1988 to 2016
 olympicsdata <- olympicsdata |>
-  filter(year >= 1996 & year <= 2016)
+  filter(year >= 1988 & year <= 2016)
 
-# Changing city names into their respective countries (as if they were in 2025) so that we can compare teams and countries for home-field advantage
+# Defining a function to change city names into their respective countries (as if they were in 2025) so that we can compare teams and countries for home-field advantage
 hostcitytocountry <- function(olympicsdata, city) {
   hostcitytocountry <- data.frame(
-    city = c("Atlanta", "Sydney", "Athina", "Beijing", "London", "Rio de Janeiro"),
-    country = c("United States", "Australia", "Greece", "China", "United Kingdom", "Brazil"))
+    city = c("Seoul", "Barcelona", "Atlanta", "Sydney", "Athina", "Beijing", "London", "Rio de Janeiro"),
+    country = c("South Korea", "Spain", "United States", "Australia", "Greece", "China", "Great Britain", "Brazil"))
   updatedolympicsdata <- olympicsdata |>
     left_join(hostcitytocountry, by = setNames("city", city)) |>
-    mutate(!!city := country) |>
-    select(-country) 
-  return(updatedolympicsdata)
+    mutate(!!city := country) |> select(-country) 
 }
 
 olympicsdata <- hostcitytocountry(olympicsdata, "city")
@@ -69,14 +71,149 @@ olympicsdata
 
 ```
 
-We now have a data table easier to work with in light of our aim. We will now add a column test ok test 1
+We now have a data table easier to work with in light of our aim. We will now extract data from this data table to create a separate data table, where we will have the competing team, the average medal points per athlete from that country in a given year of the summer olympics, the country that the host city is in, and the year of the summer olympics. We do this for all 8 hosts between 1988-2016 and their sports teams.
+
+```{r}
+# Defining host countries for easier data use
+host_countries <- c("South Korea", "Spain", "United States", "Australia", "Greece", "China", "Great Britain", "Brazil")
+
+# Summarizing data table based on competing team, calculating the average medal points per athlete per country by summing up number of athletes and averaging out, host city country, and year; and summarizing in a data table organized alphabetically by team country name.
+final_table <- map_dfr(host_countries, function(country) {
+  olympicsdata |>
+    filter(team==country) |>
+    group_by(team, year, city) |>
+    summarise(average_medal_points = mean(medal_points, na.rm = TRUE),  
+      athletes_per_team = n_distinct(id), .groups = "drop") |>
+    mutate(average_medal_points_per_athlete = (average_medal_points/athletes_per_team)) |>
+    select(team, average_medal_points_per_athlete, city, year) 
+}) |> arrange(team)
+
+final_table
+```
 
 
+# Results
+
+Let us now graph these teams' performances per athlete over the years.
+
+```{r}
+# Extracting host/not host information, to be used in graphing and calculations
+final_table <- final_table |>
+  mutate(host_or_not = ifelse(city==team, "Yes", "No"))
+
+# Calculating the average medal points per athlete when country is the host
+hosts_average <- final_table |>
+  filter(host_or_not=="Yes") |>
+  summarise(host_average_medal_points = mean(average_medal_points_per_athlete, na.rm = TRUE)) |>
+  pull(host_average_medal_points)
+
+# Calculating the average medal points per athlete, regardless of if country is host or not
+overall_average <- final_table |>
+  summarise(overall_average_medal_points = mean(average_medal_points_per_athlete, na.rm = TRUE)) |>
+  pull(overall_average_medal_points)
+
+# Plotting each country's scatterplot, non-host data points small black, host data points triangle, and average medal points per athlete lines for both overall and host-only
+ggplot(final_table, aes(x = factor(year), y = average_medal_points_per_athlete, group = team, color = team)) +
+  geom_line(size = 1.2, alpha = 0.65) +
+    geom_point(aes(shape = host_or_not), size = ifelse(final_table$host_or_not=="Yes", 5.2, 2), color = "black") + 
+  scale_shape_manual(values = c("Yes" = 17, "No" = 16)) +
+  scale_fill_manual(values = c( "red", "red")) +
+  scale_x_discrete(labels=function(a) gsub("\\.", " ", a)) + 
+  labs(x = "Year", 
+    y = "Average Medal Points per Athlete", 
+    title = "Average Medal Points per Athlete for Host Countries (1988-2016)") +
+  theme_minimal() + theme(legend.position = "bottom") +
+  geom_hline(yintercept = hosts_average, linetype = "dashed", color = "red", size = 1) + geom_hline(yintercept = overall_average, linetype = "dashed", color = "black", size = 1)
+```
+
+The above graph shows each team's athletes' average medal points for each year of the competition. Each data point is marked with a black dot, where each country's statistics are shown with a semi-opaque colored line. If the country was host that year in which it was competing, its data points are shown with a big triangle.
+
+Shown with the dashed black line on the graph, if we average out all data points (whether the country was host or not), we get an average medal point per athlete of:
+```{r}
+overall_average
+```
+
+Shown with the dashed red line on the graph, if we average out all data points (whether the country was host or not), we get an average medal point per athlete of:
+
+```{r}
+hosts_average
+```
+
+This means that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year, according to our data set.
 
 
+# Permutation Test
 
+In order to do a permutation test, let's add a simple column showing whether if the country was the host or not for a given average medal points per athlete for a given Summer Olympics, appending it to our data table above.
+
+
+```{r}
+final_table <- final_table |> 
+  mutate(host_or_not = ifelse(team==city, "Yes", "No"))
+
+final_table
+```
+
+In order to do a permutation test, we now take the variables host_or_not, telling us if a city is a host or not, and average_medal_points_per_athlete, telling the average medal points for athletes at a given year from a given team at the Summer Olympics, from the above table. While doing a permutation test, we discard whether if the average_medal_points_per_athlete is by a host nation instance or not, and we randomize/shuffle (here 10000 times) to create a normal distribution of a case where average_medal_points_per_athlete randomly varied, but assuming host_or_not was not a factor. This is called our Null Distribution. 
+
+```{r}
+# Code heavily helped by DS002 Lecture Notes, cited down below
+
+# Creating the permutation test data
+perm_data <- function(rep, data){
+  data |> 
+    select(host_or_not, average_medal_points_per_athlete) |> 
+    mutate(math_perm = sample(average_medal_points_per_athlete, replace = FALSE)) |> 
+    group_by(host_or_not) |> 
+    summarize(points_avg = mean(average_medal_points_per_athlete),
+              perm_avg = mean(math_perm)) |> 
+    summarize(points_avg_diff = diff(points_avg),
+              perm_avg_diff = diff(perm_avg),
+              rep = rep)
+}
+
+# Setting seed and shuffling 10000 times
+set.seed(4747)
+perm_stats <- 
+  map(c(1:10000), perm_data, data = final_table) |> 
+  list_rbind() 
+
+# Plotting it on a histogram with red lines showing our dataset's case testing for extremes.
+perm_stats |> 
+  ggplot(aes(x = perm_avg_diff)) + 
+  geom_histogram() + 
+  geom_vline(aes(xintercept = points_avg_diff), color = "red")
+
+# Calculating p-values for both an advantage condition or a disadvantage condition
+perm_stats |> 
+  summarize("Advantage", p_value_avg = mean(perm_avg_diff > points_avg_diff))  
+perm_stats |> 
+  summarize("Disadvantage", p_value_avg = mean(perm_avg_diff < points_avg_diff))
 
 ```
+
+Please note since our hypothesis tests for both an advantage condition or disadvantage condition, we have two p-values for either relationship. In our case, looking at the values, we can conclude that there is a <i>disadvantage</i> relationship in our hypothesis, which we will get to now.
+
+# Conclusion
+
+From our data, we see that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. Furthermore, according to our p-value calculation, our alternative hypothesis is shown in the <i>disadvantaged</i> direction, as we have reached a p-value of 0.0107, as this is less than the p-value of 0.05 generally accepted by the modern-day scientific institution (2025). This p-value looks at the probability that our data set might have randomly been on the <i>left</i> of the red line in the above graph. The advantaged direction would have look at the right of the red line, which would obviously been an unacceptable conclusion.
+
+To reiterate, we show that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. This might seem counter-intuitive at first, as most research shows that in athletics a "Home Advantage" is quite significant. Factors such as fan support, fan or bureaucratic pressure on judges/referees, similar climate/sports hall conditions, similar cuisine, possible non-temporary stays during the competition all favor the home team. So, what might be the cause that we actually seem to have a "Home <i>Disadvantage</i>"?
+
+We had established that our analysis was on a per athlete basis. It is most likely true, that all these factors are noticeably helping the home team. However, the home team also is generally allowed to bring a very significant amount of more athletes from its own nation that it can send abroad for another olympic competition. This is possibly a combination of wildcard entrees being awarded to the host more often, pre-determined extra quotas for the host, and a big relief in budgeting for sponsoring athletes domestically and not internationally.
+
+Of course, assuming the supply of world-class athletes are limited, the home country will fill the rest of the spots with less-likely-world-class athletes. This likely will result in overall worse performance by those athletes. Furthermore, the number of medals stay the same regardless of how many from a country compete. For all these reasons, due to the <i>average</i> quality of athletes going down as a result of lower qualifying standards due to a supply of more available positions, on a <i>per athlete basis</i>, hosts of Summer Olympics events are disadvantaged according to our data set. Our closest estimate, according to the cross-competitions of the 8 Summer Olympics hosts from 1988 to 2016 over this time interval, that countries during this interval were 44.7% more likely, on average, to score a medal if their country was <i>not</i> the host for that year.
+
+We have shown a statistical significance showing our alternate hypothesis that hosting a Summer Olympics does have a negative effect on the number medals earned per participating athlete capita. This is backed by a p-value of 0.0107.
+
+
+# Sources
+
+TidyTuesdayR package obtained from https://github.com/rfordatascience/tidytuesday/blob/main/data/2024/2024-08-06/readme.md. Provided by 'jonthegeek', published on 2024-08-06 borrowing from previously published data also via TidyTuesday (2021-07-27).
+
+Coding help obtained from: 
+https://ds002r-fds.netlify.app/slides/2025-03-26-perm. With many thanks to Prof. Hardin.
+
 
 
 
