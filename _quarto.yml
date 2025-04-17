@@ -18,6 +18,8 @@ website:
         href: SongsAnalysis.html
       - text: "Olympics Home Advantage"
         href: HomeAdvantageOlympics.html
+      - text: "Data Science and Ethics"
+        href: DataScienceEthics.html
 
 format:
   html:
