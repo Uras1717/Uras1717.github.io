@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "TRAFFIC STOPS ANALYSIS CHANGE TITLE"
 description: |
   An analysis 
 author: Uras Uyal
@@ -30,8 +30,6 @@ con_traffic <- DBI::dbConnect(
 Now, we import the data from the SQL server: 
 
 ```{sql connection=con_traffic}
-#| output.var: "traffic_stops_california"
-
 SELECT 
   'Oakland' AS city,
   citation_issued,
@@ -101,9 +99,17 @@ WHERE date IS NOT NULL
   AND reason_for_stop = 'TRAFFIC VIOLATION'
   AND YEAR(date) = 2014
   AND NOT (citation_issued = 1 AND warning_issued = 1);
-    
 ```
+
+
 Since Oakland, San Francisco, San Diego, and Stockton all have their own separate data tables, we join them unionwise. In our data table, we want the city name, whether if a citation was issued, and whether if a warning was issued. Also, we only want to see the data that was for traffic stops (not pedestrians) and those that are for traffic violations, so that we do not include ones that are civilian-initiated (like calls for help). Our data existed fully for all cities only between January 2014 and March 2015, so, to keep things consistent, we will only analyze data in 2014. The months those traffic stops happened are numbered 1 through 12. Citations and warnings are usually mutually exclusive; however, it is possible that both may have happened at the same time (perhaps the officer changed their minds, or both a citation and a warning were given for two different reasons in the same stop, etc.). In order to eliminate doubles, we also remove any single stop counting for both a citation and a warning.
+
+It is now possible for a traffic stop in our data set to result in no warning or citation, result in a warning, or result in a citation. No warning or citation is the least severe punishment (no punishment at all) and resulting in a citation is the most severe. The ratio-wise prevalence of citations and warnings *could* be an indicator of how severely traffic stops are handled. However, they also *could* be an indicator of how accurate the officers are at assessing when to pull over people. In order to dig deep into actual severity of how traffic stops are handled, we can look at the ratio between how many warnings are given and how many citations are given. There being either a citation or a warning will ensure that the driver was actually seen to be *in fault*; and taking the citation to warning ratio will give us insight on how severe the punishment was for every traffic stop that had the driver at fault. Therefore, we modify the above SQL code to separate the number of citations issued, number of warnings issued, and the number of no citation or warning traffic stops for each month in 2014 for each city:
+
+INSERT SQL CODE
+
+
+We now have all the data we want to work with.
 
 Before we continue with data visualization, it is good practice to disconnect from the SQL server:
 
@@ -111,5 +117,7 @@ Before we continue with data visualization, it is good practice to disconnect fr
 DBI::dbDisconnect(con_traffic)
 ```
 
-Now, on to data visualization and analysis. It is now possible for a traffic stop in our data set to result in no warning or citation, result in a warning, or result in a citation. No warning or citation is the least severe punishment (no punishment at all) and resulting in a citation is the most severe. The ratio-wise prevalence of citations and warnings *could* be an indicator of how severely traffic stops are handled. However, they also *could* be an indicator of how accurate the officers are at assessing when to pull over people. In order to dig deep into actual severity of how traffic stops are handled, we can look at the ratio between how many warnings are given and how many citations are given. There being *either* a citation or a warning will ensure that the driver was actually seen as to be in fault, and will compare how severely that fault was being punished:
+On to data visualization.
+
+
 

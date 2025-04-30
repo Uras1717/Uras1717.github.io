@@ -20,6 +20,8 @@ website:
         href: HomeAdvantageOlympics.html
       - text: "Data Science and Ethics"
         href: DataScienceEthics.html
+      - text: "CA Traffic Stops"
+        href: TrafficStopsAnalysis.html
 
 format:
   html:
