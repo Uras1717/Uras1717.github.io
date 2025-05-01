@@ -204,7 +204,7 @@ We see that both Bay Area cities and SD+Stockton peak in April or May, and then 
 
 All in all, we analyzed our data tables of Oakland, San Francisco, San Diego, and Stockton; CA from the Stanford Open Policing Project, cited below, for citations and warnings. We have defined a ratio where we take the ratio between citations and warnings. This ratio being high means more citations were issued for every case where the driver is being seen as in fault, therefore, telling us low tolerance exists. This ratio being low means less citations were issued for every case where the driver is being seen as in fault, therefore, telling us high tolerance exists. Although this is not a perfect metric, the stark difference between cities tells us something.
 
-We have shown that a significant difference between cities exists for tolerance. More rural or less urban cities tend to have a lower citation vs. warning ratio or higher tolerance. This is supported by the data where Stockton, San Diego, and Bay Area cities are in that order both by in terms of urbanism/population and citation vs. warning ratio.
+We have shown that a significant difference between cities exists for tolerance. More rural or less urban cities tend to have a lower citation vs. warning ratio or higher tolerance. This is supported by the data where Stockton, San Diego, and Bay Area cities rank in this same order, from low to high; both by in terms of urbanism/population, and citation vs. warning ratio.
 
 We also tried to come up with any correlation between months of the year determining tolerance; however, without more evidence, analysis, or data; it is not healthy to conclude that such a correlation does or does not exist.
 
