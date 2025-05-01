@@ -103,6 +103,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -171,11 +181,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#sql-data-wrangling" id="toc-sql-data-wrangling" class="nav-link" data-scroll-target="#sql-data-wrangling">SQL Data Wrangling</a></li>
+  <li><a href="#data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-cities" id="toc-data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-cities" class="nav-link" data-scroll-target="#data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-cities">Data Visualization and Analysis of Citations vs.&nbsp;Warnings Ratio between Cities</a></li>
+  <li><a href="#data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-months" id="toc-data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-months" class="nav-link" data-scroll-target="#data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-months">Data Visualization and Analysis of Citations vs.&nbsp;Warnings Ratio between Months</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -189,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta column-page-left">
 
     <div>
     <div class="quarto-title-meta-heading">Author</div>
@@ -213,8 +234,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>#Introduction In this analysis, our goal is to examine and analyze any trends between citations and warnings for police stops. We will be using data from the Stanford Open Policing Project, which has data from 42 states with many subdivisions, and is cited down below. We will be looking at the trends in California cities, and although they have data on a number of cities, data on whether if citations were issued and whether if warnings were issued both exist for only 4 cities: Oakland, San Francisco, San Diego, and Stockton. Therefore, we will be analyzing any common trends between these cities. We will also aim to draw a conclusion on whether if these cities may have more lenient or more strict treshholds regarding punishments (as shown by the rates of citations and warnings).</p>
-<p>#SQL Data Wrangling</p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>In this analysis, our goal is to examine and analyze any trends between citations and warnings for police stops. We will be using data from the Stanford Open Policing Project, which has data from 42 states with many subdivisions, and is cited down below. We will be looking at the trends in California cities, and although they have data on a number of cities, data on whether if citations were issued and whether if warnings were issued both exist for only 4 cities: Oakland, San Francisco, San Diego, and Stockton. Therefore, we will be analyzing any common trends between these cities. We will also aim to draw a conclusion on whether if these cities may have more lenient or more strict treshholds regarding punishments (as shown by the rates of citations and warnings).</p>
+</section>
+<section id="sql-data-wrangling" class="level1">
+<h1>SQL Data Wrangling</h1>
 <p>We first connect to the SQL server:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI)</span>
@@ -239,9 +264,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> (</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> <span class="st">'Oakland'</span> <span class="kw">AS</span> city,</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">MONTH</span>(<span class="dt">date</span>) <span class="kw">AS</span> <span class="dt">month</span>,</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> ca_oakland_2020_04_01</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> <span class="dt">date</span> <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> citation_issued <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
@@ -254,9 +279,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span> <span class="st">'San Francisco'</span> <span class="kw">AS</span> city,</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">MONTH</span>(<span class="dt">date</span>) <span class="kw">AS</span> <span class="dt">month</span>,</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> ca_san_francisco_2020_04_01</span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> <span class="dt">date</span> <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> citation_issued <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
@@ -269,9 +294,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span> <span class="st">'San Diego'</span> <span class="kw">AS</span> city,</span>
 <span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="dt">MONTH</span>(<span class="dt">date</span>) <span class="kw">AS</span> <span class="dt">month</span>,</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> ca_san_diego_2020_04_01</span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> <span class="dt">date</span> <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
 <span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> citation_issued <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
@@ -284,9 +309,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="kw">SELECT</span> <span class="st">'Stockton'</span> <span class="kw">AS</span> city,</span>
 <span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="dt">MONTH</span>(<span class="dt">date</span>) <span class="kw">AS</span> <span class="dt">month</span>,</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> citations_per_month,</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> warnings_per_month,</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">IF</span>(citation_issued <span class="op">=</span> <span class="dv">0</span> <span class="kw">AND</span> warning_issued <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>,<span class="dv">0</span>) <span class="kw">AS</span> no_punishment_per_month</span>
 <span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>  <span class="kw">FROM</span> ca_stockton_2020_04_01</span>
 <span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>  <span class="kw">WHERE</span> <span class="dt">date</span> <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
 <span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    <span class="kw">AND</span> citation_issued <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
@@ -301,45 +326,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>It is now possible for a traffic stop in our data set to result in no warning or citation, result in a warning, or result in a citation. No warning or citation is the least severe punishment (no punishment at all) and resulting in a citation is the most severe. The ratio-wise prevalence of citations and warnings <em>could</em> be an indicator of how severely traffic stops are handled. However, they also <em>could</em> be an indicator of how accurate the officers are at assessing when to pull over people. In order to dig deep into actual severity of how traffic stops are handled, we can look at the ratio between how many warnings are given and how many citations are given. There being either a citation or a warning will ensure that the driver was actually seen to be <em>in fault</em>; and taking the citation to warning ratio will give us insight on how severe the punishment was for every traffic stop that had the driver at fault.</p>
 <p>To achieve our aim, we put all the previous queries that are mentioned in the last 2 paragraphs under a subquery, and we write a query to sum up the number of citations, number of warnings, and the number of no punishments per month per city. To extract information from the subquery to the query, we add if statements inside the subquery regarding that specific row’s citation/warning/no punishment status and city and month. In the main query, we finally also calculate the ratio of citations vs.&nbsp;warnings per month per city.</p>
 <p>We now have all the data we want to work with.</p>
-<p>Let’s now output the first few rows of our table:</p>
+<p>Let’s now output our table:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(citations_vs_warnings_per_city_per_month)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     city month citations_vs_warnings_ratio citations_per_city_per_month
-1 Oakland     1                      2.6336                          690
-2 Oakland     2                      2.5746                          932
-3 Oakland     3                      2.9778                         1075
-4 Oakland     4                      3.1854                         1306
-5 Oakland     5                      2.8986                         1058
-6 Oakland     6                      2.8079                          921
-  warnings_per_city_per_month no_punishment_per_city_per_month
-1                         262                              472
-2                         362                              463
-3                         361                              483
-4                         410                              465
-5                         365                              527
-6                         328                              478</code></pre>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#My data table was coming out weird because it didn't fit into the page, so, I looked up how to make it nicer, and this library really does make it nicer. This way, I don't even have to do head( ) because you can just scroll between pages of 10 rows.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">datatable</span>(citations_vs_warnings_per_city_per_month, <span class="at">options =</span> <span class="fu">list</span>(<span class="at">scrollX=</span><span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1d83af84ec719d9999f3" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1d83af84ec719d9999f3">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48"],["Oakland","Oakland","Oakland","Oakland","Oakland","Oakland","Oakland","Oakland","Oakland","Oakland","Oakland","Oakland","San Diego","San Diego","San Diego","San Diego","San Diego","San Diego","San Diego","San Diego","San Diego","San Diego","San Diego","San Diego","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","San Francisco","Stockton","Stockton","Stockton","Stockton","Stockton","Stockton","Stockton","Stockton","Stockton","Stockton","Stockton","Stockton"],[1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6,7,8,9,10,11,12,1,2,3,4,5,6,7,8,9,10,11,12],[2.6336,2.5746,2.9778,3.1854,2.8986,2.8079,3.1837,2.7676,2.4644,2.3662,2.293,1.7527,1.5192,1.4648,1.5575,1.8415,1.6603,2.1121,1.896,1.9108,1.7045,1.8491,1.8962,1.6115,2.4974,2.8391,2.7337,2.7619,2.6555,2.7622,2.3968,2.4636,2.7995,2.6526,2.4914,2.3608,1.2681,0.5936,0.7469,0.9671999999999999,1.4855,0.6933,0.8188,0.3716,0.5134,0.6374,0.3651,0.581],[690,932,1075,1306,1058,921,1213,1179,1141,1079,1041,489,6701,7771,7627,8469,7058,7595,7165,7301,5906,5834,6121,4978,5372,5894,6323,5789,5056,4983,5170,5245,5375,5764,5506,4691,577,279,360,324,410,260,366,152,115,58,46,61],[262,362,361,410,365,328,381,426,463,456,454,279,4411,5305,4897,4599,4251,3596,3779,3821,3465,3155,3228,3089,2151,2076,2313,2096,1904,1804,2157,2129,1920,2173,2210,1987,455,470,482,335,276,375,447,409,224,91,126,105],[472,463,483,465,527,478,587,662,706,684,575,284,693,802,559,469,398,367,352,314,230,227,190,150,151,171,161,166,143,146,160,161,115,169,187,125,12,7,28,15,10,5,11,4,5,2,4,5]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>city<\/th>\n      <th>month<\/th>\n      <th>citations_vs_warnings_ratio<\/th>\n      <th>citations_per_city_per_month<\/th>\n      <th>warnings_per_city_per_month<\/th>\n      <th>no_punishment_per_city_per_month<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"city","targets":1},{"name":"month","targets":2},{"name":"citations_vs_warnings_ratio","targets":3},{"name":"citations_per_city_per_month","targets":4},{"name":"warnings_per_city_per_month","targets":5},{"name":"no_punishment_per_city_per_month","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>We see there is some movement between Oakland’s citations vs.&nbsp;warnings ratio over the months, but, we will probably see starker differences between cities instead of between months inside of the same city. We will analyze if such significance exists by data visualization.</p>
 <p>Before we continue with data visualization, it is good practice to disconnect from the SQL server:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbDisconnect</span>(con_traffic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>DBI<span class="sc">::</span><span class="fu">dbDisconnect</span>(con_traffic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>#Data Visualization and Analysis of Citations vs.&nbsp;Warnings Ratio between Cities</p>
+</section>
+<section id="data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-cities" class="level1">
+<h1>Data Visualization and Analysis of Citations vs.&nbsp;Warnings Ratio between Cities</h1>
 <p>On to data visualization.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(citations_vs_warnings_per_city_per_month, </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> citations_vs_warnings_ratio, <span class="at">color =</span> city, <span class="at">group =</span> city)) <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Citations vs. Warnings Ratio per City in CA per Month in 2014"</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Month in 2014"</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Citations vs. Warnings Ratio"</span>) <span class="sc">+</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">labels =</span> month.abb) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="cn">NA</span>) <span class="sc">+</span> </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>() <span class="sc">+</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="fl">0.85</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(citations_vs_warnings_per_city_per_month, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> citations_vs_warnings_ratio, <span class="at">color =</span> city, <span class="at">group =</span> city)) <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Citations vs. Warnings Ratio per City in CA per Month in 2014"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Month in 2014"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Citations vs. Warnings Ratio"</span>) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">labels =</span> month.abb) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>() <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="fl">0.85</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -351,13 +371,71 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The above graph shows the citations vs.&nbsp;warnings ratio per California city analyzed per month in 2014. The difference between cities is quite noticeable. Stockton hovers around 0.5-1 citations per warning, whereas Oakland and San Francisco are around 2.5-3. Now, we had already established that in order to reduce the crime rate’s influence on deciding how strict punishments in traffic stops are, we were taking the ratio of citations vs.&nbsp;warnings (which means that in theory, all people who get a citation OR warning ARE at fault, but, only those who get a citation are deemed punished severely). Now, although this may reduce the crime rate’s effect, it is not enough of a reason that we do not consider it a reason.</p>
 <p>However, could there be other reasons? Perhaps how urban the city is could be a reason. Stockton is considerably less urban than any of the other cities, and San Diego is a much smaller and well-organized city compared to San Francisco or Oakland. San Francisco and Oakland, being a bridge away, are quite comparable in terms of city layout and do not have population prominence (i.e.&nbsp;Oakland is not a “city” because it stands standalone in the middle of the country, but is a city only for governmental purposes, therefore, does not have as high of a “prominence”), For our analysis, it is safe to group SF+Oakland together as the Bay Area.</p>
 <p>Since Stockton, then San Diego, have less population than the Bay Area, these cities having a considerably smaller population (or common-cause being less urban) may be the reason there is a considerable difference, aligning with population/urbanism, for these cities’ citations vs.&nbsp;warnings ratio. This may be caused by a number of factors, but perhaps most prominently; either a smaller population means a more tight-knit community, resulting in officers trusting the goodwill of citizens, or a larger population means officers are not scared to cite law-breakers, as in small cities they may be subject to more <em>personal</em> hatred.</p>
-<p>#Data Visualization and Analysis of Citations vs.&nbsp;Warnings Ratio between Months</p>
+</section>
+<section id="data-visualization-and-analysis-of-citations-vs.-warnings-ratio-between-months" class="level1">
+<h1>Data Visualization and Analysis of Citations vs.&nbsp;Warnings Ratio between Months</h1>
 <p>We can see that the citations vs.&nbsp;warnings ratio between cities is quite starkly pronounced, as explained. However, is there also a difference between months inside of cities? We see that Stockton goes up and down in the first half of 2014, and Oakland declines noticeably during the second half of the year; however, it is hard to find a justifiable reason that these may be the case.</p>
-<p>To be able to possibly find an underlying correlation between months, let’s try to isolate this possible correlation by trying to remove the image of the city-by-city correlation. To do this, let’s now graph the Bay Area cities together vs.&nbsp;San Diego and Stockton together. We will specifically be looking at the development of the ratio between (the citations to warnings ratio of Bay Area cities averaged) vs.&nbsp;(the citations to warnings ratio of SD &amp; Stockton averaged).</p>
-<p>#Conclusion</p>
-<p>#Sources</p>
+<p>To be able to possibly find an underlying correlation between months, let’s try to isolate this possible correlation by trying to remove the image of the city-by-city correlation. To do this, let’s now graph the Bay Area cities together vs.&nbsp;San Diego and Stockton together. We will specifically be looking at the development of (the citations to warnings ratio of Bay Area cities averaged) vs.&nbsp;(the citations to warnings ratio of SD &amp; Stockton averaged).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#ggplot does not accept two different variable calculations + mapping, so, here I am separating geom_line s and geom_point s.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SF+Oakland</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> citations_vs_warnings_per_city_per_month <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>              <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"San Francisco"</span> <span class="sc">|</span> city <span class="sc">==</span> <span class="st">"Oakland"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>              <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>              <span class="fu">summarise</span>(<span class="at">sf_and_oakie =</span> <span class="fu">mean</span>(citations_vs_warnings_ratio)),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> sf_and_oakie), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> citations_vs_warnings_per_city_per_month <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"San Francisco"</span> <span class="sc">|</span> city <span class="sc">==</span> <span class="st">"Oakland"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>               <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>               <span class="fu">summarise</span>(<span class="at">sf_and_oakie =</span> <span class="fu">mean</span>(citations_vs_warnings_ratio)),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> sf_and_oakie), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#SD+Stockton</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> citations_vs_warnings_per_city_per_month <span class="sc">|&gt;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>              <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"San Diego"</span> <span class="sc">|</span> city <span class="sc">==</span> <span class="st">"Stockton"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>              <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>              <span class="fu">summarise</span>(<span class="at">sd_and_stockton =</span> <span class="fu">mean</span>(citations_vs_warnings_ratio)),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> sd_and_stockton), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> citations_vs_warnings_per_city_per_month <span class="sc">|&gt;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>               <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"San Diego"</span> <span class="sc">|</span> city <span class="sc">==</span> <span class="st">"Stockton"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>               <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>               <span class="fu">summarise</span>(<span class="at">sd_and_stockton =</span> <span class="fu">mean</span>(citations_vs_warnings_ratio)),</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> sd_and_stockton), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co">#Labeling Graph</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Avg. Citations vs. Warnings Ratio over Months for Bay Area vs. SD+Stockton"</span>,</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Month in 2014"</span>,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Avg. Citations vs. Warnings Ratio"</span>) <span class="sc">+</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">labels =</span> month.abb) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_light</span>() <span class="sc">+</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="fl">0.85</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="TrafficStopsAnalysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>With this graph, we can see in more detail the difference between Bay Area cities vs.&nbsp;SD and Stockton. However, this graph also makes us see if there is any correlation between time passing and punishment severity.</p>
+<p>We see that both Bay Area cities and SD+Stockton peak in April or May, and then gradually go down in punishment severity. This is not clear or significant enough that we can say that this is not a result of just pure chance, but it is possible that something made punishments more severe in April-May 2014 and made them gradually decline. Possible, fully hypotethical explanations may include events going on around the country or new policing regulations in CA or the US around this time. Or, perhaps police become most comfortable hitting their citation quota around 4-5 months in and then slowly decline giving away citations, on average, if they need not fill that quota anymore or are making adequate progress. These are extremely hypotethical explanations to the very vague and non-significant relationship between months passing and our ratio, and cannot be validated without seeing other years except 2014 or without a permutation test or without <em>a lot more</em> data. Therefore, we can say that there is no clear connection between months passing and our tolerance/severity in traffic stops ratio.</p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>All in all, we analyzed our data tables of Oakland, San Francisco, San Diego, and Stockton; CA from the Stanford Open Policing Project, cited below, for citations and warnings. We have defined a ratio where we take the ratio between citations and warnings. This ratio being high means more citations were issued for every case where the driver is being seen as in fault, therefore, telling us low tolerance exists. This ratio being low means less itations were issued for every case where the driver is being seen as in fault, therefore, telling us high tolerance exists. Although this is not a perfect metric, the stark difference between cities tells us something.</p>
+<p>We have shown that a significant difference between cities exists for tolerance. More rural or less urban cities tend to have a lower citation vs.&nbsp;warning ratio or higher tolerance. This is supported by the data where Stockton, San Diego, and Bay Area cities are in that order both by in terms of urbanism/population and citation vs.&nbsp;warning ratio.</p>
+<p>We also tried to come up with any correlation between months of the year determining tolerance; however, without more evidence, analysis, or data; it is not healthy to conclude that such a correlation does or does not exist.</p>
+</section>
+<section id="source" class="level1">
+<h1>Source</h1>
+<p>Pierson, Emma, Camelia Simoiu, Jan Overgoor, Sam Corbett-Davies, Daniel Jenson, Amy Shoemaker, Vignesh Ramachandran, et al.&nbsp;2020. “A Large-Scale Analysis of Racial Disparities in Police Stops Across the United States.” Nature Human Behaviour, 1–10.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

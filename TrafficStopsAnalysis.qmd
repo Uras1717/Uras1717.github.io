@@ -10,10 +10,10 @@ execute:
   message: false
 ---
 
-#Introduction
+# Introduction
 In this analysis, our goal is to examine and analyze any trends between citations and warnings for police stops. We will be using data from the Stanford Open Policing Project, which has data from 42 states with many subdivisions, and is cited down below. We will be looking at the trends in California cities, and although they have data on a number of cities, data on whether if citations were issued and whether if warnings were issued both exist for only 4 cities: Oakland, San Francisco, San Diego, and Stockton. Therefore, we will be analyzing any common trends between these cities. We will also aim to draw a conclusion on whether if these cities may have more lenient or more strict treshholds regarding punishments (as shown by the rates of citations and warnings).
 
-#SQL Data Wrangling
+# SQL Data Wrangling
 
 We first connect to the SQL server:
 
@@ -44,9 +44,9 @@ SELECT city,
 FROM (
 SELECT 'Oakland' AS city,
     MONTH(date) AS month,
-    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
-    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
-    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+    IF(citation_issued = 1 AND warning_issued = 0, 1,0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1,0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1,0) AS no_punishment_per_month
   FROM ca_oakland_2020_04_01
   WHERE date IS NOT NULL
     AND citation_issued IS NOT NULL
@@ -59,9 +59,9 @@ SELECT 'Oakland' AS city,
 
   SELECT 'San Francisco' AS city,
     MONTH(date) AS month,
-    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
-    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
-    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+    IF(citation_issued = 1 AND warning_issued = 0, 1,0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1,0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1,0) AS no_punishment_per_month
   FROM ca_san_francisco_2020_04_01
   WHERE date IS NOT NULL
     AND citation_issued IS NOT NULL
@@ -74,9 +74,9 @@ SELECT 'Oakland' AS city,
 
   SELECT 'San Diego' AS city,
     MONTH(date) AS month,
-    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
-    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
-    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+    IF(citation_issued = 1 AND warning_issued = 0, 1,0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1,0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1,0) AS no_punishment_per_month
   FROM ca_san_diego_2020_04_01
   WHERE date IS NOT NULL
     AND citation_issued IS NOT NULL
@@ -89,9 +89,9 @@ SELECT 'Oakland' AS city,
 
   SELECT 'Stockton' AS city,
     MONTH(date) AS month,
-    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
-    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
-    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+    IF(citation_issued = 1 AND warning_issued = 0, 1,0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1,0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1,0) AS no_punishment_per_month
   FROM ca_stockton_2020_04_01
   WHERE date IS NOT NULL
     AND citation_issued IS NOT NULL
@@ -111,9 +111,13 @@ To achieve our aim, we put all the previous queries that are mentioned in the la
 
 We now have all the data we want to work with.
 
-Let's now output the first few rows of our table:
+Let's now output our table:
 ```{r}
-head(citations_vs_warnings_per_city_per_month)
+#My data table was coming out weird because it didn't fit into the page, so, I looked up how to make it nicer, and this library really does make it nicer. This way, I don't even have to do head( ) because you can just scroll between pages of 10 rows.
+
+library(DT)
+
+datatable(citations_vs_warnings_per_city_per_month, options = list(scrollX=TRUE))
 ```
 
 We see there is some movement between Oakland's citations vs. warnings ratio over the months, but, we will probably see starker differences between cities instead of between months inside of the same city. We will analyze if such significance exists by data visualization.
@@ -124,12 +128,13 @@ Before we continue with data visualization, it is good practice to disconnect fr
 DBI::dbDisconnect(con_traffic)
 ```
 
-#Data Visualization and Analysis of Citations vs. Warnings Ratio between Cities
+# Data Visualization and Analysis of Citations vs. Warnings Ratio between Cities
 
 On to data visualization.
 
 ```{r}
 library(ggplot2)
+library(tidyverse)
 ggplot(citations_vs_warnings_per_city_per_month, 
        aes(x = month, y = citations_vs_warnings_ratio, color = city, group = city)) +
   geom_line(size = 1) +
@@ -147,18 +152,61 @@ However, could there be other reasons? Perhaps how urban the city is could be a 
 
 Since Stockton, then San Diego, have less population than the Bay Area, these cities having a considerably smaller population (or common-cause being less urban) may be the reason there is a considerable difference, aligning with population/urbanism, for these cities' citations vs. warnings ratio. This may be caused by a number of factors, but perhaps most prominently; either a smaller population means a more tight-knit community, resulting in officers trusting the goodwill of citizens, or a larger population means officers are not scared to cite law-breakers, as in small cities they may be subject to more *personal* hatred.
 
-#Data Visualization and Analysis of Citations vs. Warnings Ratio between Months
+# Data Visualization and Analysis of Citations vs. Warnings Ratio between Months
 
 We can see that the citations vs. warnings ratio between cities is quite starkly pronounced, as explained. However, is there also a difference between months inside of cities? We see that Stockton goes up and down in the first half of 2014, and Oakland declines noticeably during the second half of the year; however, it is hard to find a justifiable reason that these may be the case. 
 
-To be able to possibly find an underlying correlation between months, let's try to isolate this possible correlation by trying to remove the image of the city-by-city correlation. To do this, let's now graph the Bay Area cities together vs. San Diego and Stockton together. We will specifically be looking at the development of the ratio between (the citations to warnings ratio of Bay Area cities averaged) vs. (the citations to warnings ratio of SD & Stockton averaged).
+To be able to possibly find an underlying correlation between months, let's try to isolate this possible correlation by trying to remove the image of the city-by-city correlation. To do this, let's now graph the Bay Area cities together vs. San Diego and Stockton together. We will specifically be looking at the development of (the citations to warnings ratio of Bay Area cities averaged) vs. (the citations to warnings ratio of SD & Stockton averaged).
 
+```{r}
+ggplot() +
+#ggplot does not accept two different variable calculations + mapping, so, here I am separating geom_line s and geom_point s.
+  
+#SF+Oakland
+  geom_line(data = citations_vs_warnings_per_city_per_month |>
+              filter(city == "San Francisco" | city == "Oakland") |>
+              group_by(month) |>
+              summarise(sf_and_oakie = mean(citations_vs_warnings_ratio)),
+            aes(x = month, y = sf_and_oakie), size = 1, color = "blue") +
+  
+  geom_point(data = citations_vs_warnings_per_city_per_month |>
+               filter(city == "San Francisco" | city == "Oakland") |>
+               group_by(month) |>
+               summarise(sf_and_oakie = mean(citations_vs_warnings_ratio)),
+             aes(x = month, y = sf_and_oakie), color = "blue", size = 3) +
+  
+#SD+Stockton
+  geom_line(data = citations_vs_warnings_per_city_per_month |>
+              filter(city == "San Diego" | city == "Stockton") |>
+              group_by(month) |>
+              summarise(sd_and_stockton = mean(citations_vs_warnings_ratio)),
+            aes(x = month, y = sd_and_stockton), color = "red", size = 1) +
+  
+  geom_point(data = citations_vs_warnings_per_city_per_month |>
+               filter(city == "San Diego" | city == "Stockton") |>
+               group_by(month) |>
+               summarise(sd_and_stockton = mean(citations_vs_warnings_ratio)),
+             aes(x = month, y = sd_and_stockton), color = "red", size = 3) +
 
+#Labeling Graph
+  labs(title = "Avg. Citations vs. Warnings Ratio over Months for Bay Area vs. SD+Stockton",
+       x = "Month in 2014",
+       y = "Avg. Citations vs. Warnings Ratio") +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) + ylim(0, NA) + 
+  theme_light() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.85))
+```
+With this graph, we can see in more detail the difference between Bay Area cities vs. SD and Stockton. However, this graph also makes us see if there is any correlation between time passing and punishment severity.
 
+We see that both Bay Area cities and SD+Stockton peak in April or May, and then gradually go down in punishment severity. This is not clear or significant enough that we can say that this is not a result of just pure chance, but it is possible that something made punishments more severe in April-May 2014 and made them gradually decline. Possible, fully hypotethical explanations may include events going on around the country or new policing regulations in CA or the US around this time. Or, perhaps police become most comfortable hitting their citation quota around 4-5 months in and then slowly decline giving away citations, on average, if they need not fill that quota anymore or are making adequate progress. These are extremely hypotethical explanations to the very vague and non-significant relationship between months passing and our ratio, and cannot be validated without seeing other years except 2014 or without a permutation test or without *a lot more* data. Therefore, we can say that there is no clear connection between months passing and our tolerance/severity in traffic stops ratio.
 
-#Conclusion
+# Conclusion
 
+All in all, we analyzed our data tables of Oakland, San Francisco, San Diego, and Stockton; CA from the Stanford Open Policing Project, cited below, for citations and warnings. We have defined a ratio where we take the ratio between citations and warnings. This ratio being high means more citations were issued for every case where the driver is being seen as in fault, therefore, telling us low tolerance exists. This ratio being low means less itations were issued for every case where the driver is being seen as in fault, therefore, telling us high tolerance exists. Although this is not a perfect metric, the stark difference between cities tells us something.
 
+We have shown that a significant difference between cities exists for tolerance. More rural or less urban cities tend to have a lower citation vs. warning ratio or higher tolerance. This is supported by the data where Stockton, San Diego, and Bay Area cities are in that order both by in terms of urbanism/population and citation vs. warning ratio.
 
+We also tried to come up with any correlation between months of the year determining tolerance; however, without more evidence, analysis, or data; it is not healthy to conclude that such a correlation does or does not exist.
 
-#Sources
+# Source
+Pierson, Emma, Camelia Simoiu, Jan Overgoor, Sam Corbett-Davies, Daniel Jenson, Amy Shoemaker, Vignesh Ramachandran, et al. 2020. “A Large-Scale Analysis of Racial Disparities in Police Stops Across the United States.” Nature Human Behaviour, 1–10.
