@@ -1,7 +1,7 @@
 ---
-title: "TRAFFIC STOPS ANALYSIS CHANGE TITLE"
+title: "Tolerance Levels of Traffic Stops in CA Cities"
 description: |
-  An analysis 
+  An analysis on whether different California cities have different tolerance levels regarding how they deal with traffic stops
 author: Uras Uyal
 date: April 29, 2025
 format: html
@@ -10,7 +10,10 @@ execute:
   message: false
 ---
 
+#Introduction
 In this analysis, our goal is to examine and analyze any trends between citations and warnings for police stops. We will be using data from the Stanford Open Policing Project, which has data from 42 states with many subdivisions, and is cited down below. We will be looking at the trends in California cities, and although they have data on a number of cities, data on whether if citations were issued and whether if warnings were issued both exist for only 4 cities: Oakland, San Francisco, San Diego, and Stockton. Therefore, we will be analyzing any common trends between these cities. We will also aim to draw a conclusion on whether if these cities may have more lenient or more strict treshholds regarding punishments (as shown by the rates of citations and warnings).
+
+#SQL Data Wrangling
 
 We first connect to the SQL server:
 
@@ -26,90 +29,94 @@ con_traffic <- DBI::dbConnect(
 )
 ```
 
-
 Now, we import the data from the SQL server: 
 
 ```{sql connection=con_traffic}
-SELECT 
-  'Oakland' AS city,
-  citation_issued,
-  warning_issued,
-  MONTH(date) AS month,
-  type,
-  reason_for_stop
-FROM ca_oakland_2020_04_01
-WHERE date IS NOT NULL
-  AND citation_issued IS NOT NULL
-  AND warning_issued IS NOT NULL
-  AND type = 'vehicular'
-  AND reason_for_stop = 'TRAFFIC VIOLATION'
-  AND YEAR(date) = 2014
-  AND NOT (citation_issued = 1 AND warning_issued = 1)
+#| output.var: "citations_vs_warnings_per_city_per_month"
 
-UNION ALL
+SELECT city,
+  month,
+  SUM(citations_per_month) / SUM(warnings_per_month) AS citations_vs_warnings_ratio,
+  SUM(citations_per_month) AS citations_per_city_per_month,
+  SUM(warnings_per_month) AS warnings_per_city_per_month,
+  SUM(no_punishment_per_month) AS no_punishment_per_city_per_month
+  
+FROM (
+SELECT 'Oakland' AS city,
+    MONTH(date) AS month,
+    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+  FROM ca_oakland_2020_04_01
+  WHERE date IS NOT NULL
+    AND citation_issued IS NOT NULL
+    AND warning_issued IS NOT NULL
+    AND type = 'vehicular'
+    AND YEAR(date) = 2014
+    AND NOT (citation_issued = 1 AND warning_issued = 1)
 
-SELECT 
-  'San Francisco' AS city,
-  citation_issued,
-  warning_issued,
-  MONTH(date) AS month,
-  type,
-  reason_for_stop
-FROM ca_san_francisco_2020_04_01
-WHERE date IS NOT NULL
-  AND citation_issued IS NOT NULL
-  AND warning_issued IS NOT NULL
-  AND type = 'vehicular'
-  AND reason_for_stop = 'TRAFFIC VIOLATION'
-  AND YEAR(date) = 2014
-  AND NOT (citation_issued = 1 AND warning_issued = 1)
+  UNION ALL
 
-UNION ALL
+  SELECT 'San Francisco' AS city,
+    MONTH(date) AS month,
+    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+  FROM ca_san_francisco_2020_04_01
+  WHERE date IS NOT NULL
+    AND citation_issued IS NOT NULL
+    AND warning_issued IS NOT NULL
+    AND type = 'vehicular'
+    AND YEAR(date) = 2014
+    AND NOT (citation_issued = 1 AND warning_issued = 1)
 
-SELECT 
-  'San Diego' AS city,
-  citation_issued,
-  warning_issued,
-  MONTH(date) AS month,
-  type,
-  reason_for_stop
-FROM ca_san_diego_2020_04_01
-WHERE date IS NOT NULL
-  AND citation_issued IS NOT NULL
-  AND warning_issued IS NOT NULL
-  AND type = 'vehicular'
-  AND reason_for_stop = 'TRAFFIC VIOLATION'
-  AND YEAR(date) = 2014
-  AND NOT (citation_issued = 1 AND warning_issued = 1)
+  UNION ALL
 
-UNION ALL
+  SELECT 'San Diego' AS city,
+    MONTH(date) AS month,
+    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+  FROM ca_san_diego_2020_04_01
+  WHERE date IS NOT NULL
+    AND citation_issued IS NOT NULL
+    AND warning_issued IS NOT NULL
+    AND type = 'vehicular'
+    AND YEAR(date) = 2014
+    AND NOT (citation_issued = 1 AND warning_issued = 1)
 
-SELECT 
-  'Stockton' AS city,
-  citation_issued,
-  warning_issued,
-  MONTH(date) AS month,
-  type,
-  reason_for_stop
-FROM ca_stockton_2020_04_01
-WHERE date IS NOT NULL
-  AND citation_issued IS NOT NULL
-  AND warning_issued IS NOT NULL
-  AND type = 'vehicular'
-  AND reason_for_stop = 'TRAFFIC VIOLATION'
-  AND YEAR(date) = 2014
-  AND NOT (citation_issued = 1 AND warning_issued = 1);
+  UNION ALL
+
+  SELECT 'Stockton' AS city,
+    MONTH(date) AS month,
+    IF(citation_issued = 1 AND warning_issued = 0, 1, 0) AS citations_per_month,
+    IF(citation_issued = 0 AND warning_issued = 1, 1, 0) AS warnings_per_month,
+    IF(citation_issued = 0 AND warning_issued = 0, 1, 0) AS no_punishment_per_month
+  FROM ca_stockton_2020_04_01
+  WHERE date IS NOT NULL
+    AND citation_issued IS NOT NULL
+    AND warning_issued IS NOT NULL
+    AND type = 'vehicular'
+    AND YEAR(date) = 2014
+    AND NOT (citation_issued = 1 AND warning_issued = 1)) AS putting_placeholder
+    
+GROUP BY city, month ORDER BY city, month;
 ```
 
+Since Oakland, San Francisco, San Diego, and Stockton all have their own separate data tables, we join them unionwise (Union All, because we have a lot of recurring data points). In our data table, we want the city name, whether if a citation was issued, and whether if a warning was issued. Also, we only want to see the data that was for traffic stops (not pedestrians). Our data existed fully for all cities only between January 2014 and March 2015, so, to keep things consistent, we will only analyze data in 2014. The months those traffic stops happened are numbered 1 through 12. Citations and warnings are usually mutually exclusive; however, it is possible that both may have happened at the same time (perhaps the officer changed their minds, or both a citation and a warning were given for two different reasons in the same stop, etc.). In order to eliminate doubles, we also remove any single stop counting for both a citation and a warning.
 
-Since Oakland, San Francisco, San Diego, and Stockton all have their own separate data tables, we join them unionwise. In our data table, we want the city name, whether if a citation was issued, and whether if a warning was issued. Also, we only want to see the data that was for traffic stops (not pedestrians) and those that are for traffic violations, so that we do not include ones that are civilian-initiated (like calls for help). Our data existed fully for all cities only between January 2014 and March 2015, so, to keep things consistent, we will only analyze data in 2014. The months those traffic stops happened are numbered 1 through 12. Citations and warnings are usually mutually exclusive; however, it is possible that both may have happened at the same time (perhaps the officer changed their minds, or both a citation and a warning were given for two different reasons in the same stop, etc.). In order to eliminate doubles, we also remove any single stop counting for both a citation and a warning.
+It is now possible for a traffic stop in our data set to result in no warning or citation, result in a warning, or result in a citation. No warning or citation is the least severe punishment (no punishment at all) and resulting in a citation is the most severe. The ratio-wise prevalence of citations and warnings *could* be an indicator of how severely traffic stops are handled. However, they also *could* be an indicator of how accurate the officers are at assessing when to pull over people. In order to dig deep into actual severity of how traffic stops are handled, we can look at the ratio between how many warnings are given and how many citations are given. There being either a citation or a warning will ensure that the driver was actually seen to be *in fault*; and taking the citation to warning ratio will give us insight on how severe the punishment was for every traffic stop that had the driver at fault. 
 
-It is now possible for a traffic stop in our data set to result in no warning or citation, result in a warning, or result in a citation. No warning or citation is the least severe punishment (no punishment at all) and resulting in a citation is the most severe. The ratio-wise prevalence of citations and warnings *could* be an indicator of how severely traffic stops are handled. However, they also *could* be an indicator of how accurate the officers are at assessing when to pull over people. In order to dig deep into actual severity of how traffic stops are handled, we can look at the ratio between how many warnings are given and how many citations are given. There being either a citation or a warning will ensure that the driver was actually seen to be *in fault*; and taking the citation to warning ratio will give us insight on how severe the punishment was for every traffic stop that had the driver at fault. Therefore, we modify the above SQL code to separate the number of citations issued, number of warnings issued, and the number of no citation or warning traffic stops for each month in 2014 for each city:
-
-INSERT SQL CODE
-
+To achieve our aim, we put all the previous queries that are mentioned in the last 2 paragraphs under a subquery, and we write a query to sum up the number of citations, number of warnings, and the number of no punishments per month per city. To extract information from the subquery to the query, we add if statements inside the subquery regarding that specific row's citation/warning/no punishment status and city and month. In the main query, we finally also calculate the ratio of citations vs. warnings per month per city.
 
 We now have all the data we want to work with.
+
+Let's now output the first few rows of our table:
+```{r}
+head(citations_vs_warnings_per_city_per_month)
+```
+
+We see there is some movement between Oakland's citations vs. warnings ratio over the months, but, we will probably see starker differences between cities instead of between months inside of the same city. We will analyze if such significance exists by data visualization.
 
 Before we continue with data visualization, it is good practice to disconnect from the SQL server:
 
@@ -117,7 +124,41 @@ Before we continue with data visualization, it is good practice to disconnect fr
 DBI::dbDisconnect(con_traffic)
 ```
 
+#Data Visualization and Analysis of Citations vs. Warnings Ratio between Cities
+
 On to data visualization.
 
+```{r}
+library(ggplot2)
+ggplot(citations_vs_warnings_per_city_per_month, 
+       aes(x = month, y = citations_vs_warnings_ratio, color = city, group = city)) +
+  geom_line(size = 1) +
+  geom_point(size = 2.5) +
+  labs(title = "Citations vs. Warnings Ratio per City in CA per Month in 2014",
+    x = "Month in 2014",
+    y = "Citations vs. Warnings Ratio") +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) + ylim(0, NA) + 
+  theme_light() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.85))
+```
+The above graph shows the citations vs. warnings ratio per California city analyzed per month in 2014. The difference between cities is quite noticeable. Stockton hovers around 0.5-1 citations per warning, whereas Oakland and San Francisco are around 2.5-3. Now, we had already established that in order to reduce the crime rate's influence on deciding how strict punishments in traffic stops are, we were taking the ratio of citations vs. warnings (which means that in theory, all people who get a citation OR warning ARE at fault, but, only those who get a citation are deemed punished severely). Now, although this may reduce the crime rate's effect, it is not enough of a reason that we do not consider it a reason.
+
+However, could there be other reasons? Perhaps how urban the city is could be a reason. Stockton is considerably less urban than any of the other cities, and San Diego is a much smaller and well-organized city compared to San Francisco or Oakland. San Francisco and Oakland, being a bridge away, are quite comparable in terms of city layout and do not have population prominence (i.e. Oakland is not a "city" because it stands standalone in the middle of the country, but is a city only for governmental purposes, therefore, does not have as high of a "prominence"), For our analysis, it is safe to group SF+Oakland together as the Bay Area.
+
+Since Stockton, then San Diego, have less population than the Bay Area, these cities having a considerably smaller population (or common-cause being less urban) may be the reason there is a considerable difference, aligning with population/urbanism, for these cities' citations vs. warnings ratio. This may be caused by a number of factors, but perhaps most prominently; either a smaller population means a more tight-knit community, resulting in officers trusting the goodwill of citizens, or a larger population means officers are not scared to cite law-breakers, as in small cities they may be subject to more *personal* hatred.
+
+#Data Visualization and Analysis of Citations vs. Warnings Ratio between Months
+
+We can see that the citations vs. warnings ratio between cities is quite starkly pronounced, as explained. However, is there also a difference between months inside of cities? We see that Stockton goes up and down in the first half of 2014, and Oakland declines noticeably during the second half of the year; however, it is hard to find a justifiable reason that these may be the case. 
+
+To be able to possibly find an underlying correlation between months, let's try to isolate this possible correlation by trying to remove the image of the city-by-city correlation. To do this, let's now graph the Bay Area cities together vs. San Diego and Stockton together. We will specifically be looking at the development of the ratio between (the citations to warnings ratio of Bay Area cities averaged) vs. (the citations to warnings ratio of SD & Stockton averaged).
 
 
+
+
+#Conclusion
+
+
+
+
+#Sources
