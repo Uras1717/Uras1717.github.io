@@ -235,7 +235,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="looking-at-trends-of-the-expected-number-of-songs-per-album" class="level1">
 <h1>Looking at trends of the expected number of songs per album</h1>
-<p>First, let’s take a look at the average number of songs per album. A lot of artists put up “singles”; so, in order to remove them, we filter for number of songs over 1 per album. Oftentimes, the most mainstream albums come with 7 to 12 or 13 songs per album. However, the data shows that less number of songs is more common for albums. The most common instance is 2 songs per album, then 3, etc.. This could be caused by smaller artists also being featured on Spotify and them having usually no restriction on a minimum amount of songs per album, or having any concern to release a bunch of songs at one time (they can do this over time). We see that all genres are not too extremely off from each other in songs per album; however, we see noticeable differences. Where EDM has about 2.42 songs per album, rap has 3.15. This may possibly be caused by the more vibrant and less-lyrics based nature of EDM opposed to the lyrics-heavy nature of rap. Lack of lyrics may possibly constitute in having less songs in a given album as it is harder to produce unique music with the element of just electronic music and the absence of words. EDM also tends to have the highest number of covers out of any genre as it is easier to mix-match, partly due to its relative lack of lyrics and technological produce again; where covers are only popular with popular songs, automatically making less-popular songs less covered, meaning less songs per a given album.</p>
+<p>First, let’s take a look at the average number of songs per album. A lot of artists put up “singles”; so, in order to remove them, we filter for number of songs over 1 per album. Oftentimes, the most mainstream albums come with 7 to 12 or 13 songs per album. However, the data shows that fewer number of songs is more common for albums. The most common instance is 2 songs per album, then 3, etc.. This could be caused by smaller artists also being featured on Spotify and them having usually no restriction on a minimum amount of songs per album, or having any concern to release a bunch of songs at one time (they can just rather do this over time). We see that all genres are not too extremely off from each other in songs per album; however, we see noticeable differences. Where EDM has about 2.42 songs per album, rap has 3.15. This may possibly be caused by the more vibrant and less-lyrics based nature of EDM opposed to the lyrics-heavy nature of rap. Lack of lyrics may possibly constitute in having fewer songs in a given album as it is harder to produce unique music with the element of just electronic music and the absence of words. EDM also tends to have the highest number of covers out of any genre as it is easier to mix-match, partly due to its relative lack of lyrics and technological produce again; where covers are only popular with popular songs, automatically making fewer-popular songs fewer covered, meaning fewer songs per a given album.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show source code</summary>
@@ -244,19 +244,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">songs_per_album =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre) <span class="sc">|&gt;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(songs_per_album <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_songs_per_album =</span> <span class="fu">mean</span>(songs_per_album))</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(avg_songs_per_album)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_songs_per_album =</span> <span class="fu">round</span>(<span class="fu">mean</span>(songs_per_album), <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(avg_songs_per_album)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>avg_songs_per_album</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
   playlist_genre avg_songs_per_album
   &lt;chr&gt;                        &lt;dbl&gt;
 1 edm                           2.42
-2 latin                         2.82
-3 pop                           2.76
-4 r&amp;b                           3.09
-5 rap                           3.16
-6 rock                          2.95</code></pre>
+2 pop                           2.76
+3 latin                         2.82
+4 rock                          2.95
+5 r&amp;b                           3.09
+6 rap                           3.16</code></pre>
 </div>
 </div>
 <p>Now, let’s plot the number of songs per album and their instances detailing genres. What this graph tells us different to the data table above is the quickness in decrease of number of instances as number of songs per album increases. Expectedly, EDM, with the red bars, decreases quite fast compared to other genders as we go more right on the x-axis. Rap has quite a slower decreasing curve. Perhaps another color one might catch is orange, which constitutes to R&amp;B, having quite a close curve to that of rap. If we look at our data table above, we see that R&amp;B has a value that is quite close to rap, which fulfills our expectations.</p>
@@ -269,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(songs_per_album <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(songs_per_album_per_genre, <span class="fu">aes</span>(<span class="at">x =</span> songs_per_album, <span class="at">fill =</span> playlist_genre)) <span class="sc">+</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">y=</span>..count..), <span class="at">stat =</span> <span class="st">"count"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Number of Songs per Album"</span>, <span class="at">y =</span> <span class="st">"Number of Instances of Albums"</span>, </span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Albums by Number of Songs Included"</span>) <span class="sc">+</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="dv">8</span>), <span class="at">breaks =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">8</span>) <span class="sc">+</span></span>
@@ -286,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="looking-at-trends-of-song-titles-lengths-and-genericnesses-over-time" class="level1">
 <h1>Looking at trends of song titles’ lengths and genericnesses over time</h1>
-<p>Now, let’s look at the length of song titles per genre. Here, we look at both a) the number of words in a song’s title by genre, b) the number of characters in a song’s title by genre. Although values are again close, we can see here that rap has both the lowest amount of words and length in terms of characters, and EDM has the highest. Using previous hypotheses, we can hypothesize that since EDM has less songs per album, the titles are more descriptive, the opposite for rap. Another hypothesis is since rap has a lot of words used in the song, the title should be less discriminating to the content, therefore more general, resulting in a shorter title. Again, these are all hypotethical ideas.</p>
+<p>Now, let’s look at the length of song titles per genre. Here, we look at both a) the number of words in a song’s title by genre, b) the number of characters in a song’s title by genre. Although values are again close, we can see here that rap has both the lowest amount of words and length in terms of characters, and EDM has the highest. Using previous hypotheses, we can hypothesize that since EDM has fewer songs per album, the titles are more descriptive, the opposite for rap. Another hypothesis is since rap has a lot of words used in the song, the title should be fewer discriminating to the content, therefore more general, resulting in a shorter title. Again, these are all hypotethical ideas.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show source code</summary>
@@ -294,22 +295,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(track_name)) <span class="sc">|&gt;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word_count =</span> <span class="fu">str_count</span>(track_name, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>), <span class="at">title_charlength =</span> <span class="fu">str_length</span>(<span class="fu">str_extract_all</span>(track_name,<span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>))) <span class="sc">|&gt;</span> </span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_word_count =</span> <span class="fu">mean</span>(word_count), <span class="at">avg_title_length =</span> <span class="fu">mean</span>(<span class="fu">unlist</span>(title_charlength)), <span class="at">total_songs =</span> <span class="fu">n</span>())</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(title_lengths)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_word_count =</span> <span class="fu">round</span>(<span class="fu">mean</span>(word_count), <span class="dv">2</span>), <span class="at">avg_title_length =</span> <span class="fu">round</span>(<span class="fu">mean</span>(<span class="fu">unlist</span>(title_charlength)), <span class="dv">2</span>), <span class="at">total_songs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(avg_word_count)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>title_lengths</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
   playlist_genre avg_word_count avg_title_length total_songs
   &lt;chr&gt;                   &lt;dbl&gt;            &lt;dbl&gt;       &lt;int&gt;
-1 edm                      3.48             29.6        6043
+1 rap                      2.94             24.3        5743
 2 latin                    3.04             25.5        5153
-3 pop                      3.20             26.5        5507
+3 pop                      3.2              26.5        5507
 4 r&amp;b                      3.31             27.0        5431
-5 rap                      2.94             24.3        5743
-6 rock                     3.45             29.4        4951</code></pre>
+5 rock                     3.45             29.4        4951
+6 edm                      3.48             29.6        6043</code></pre>
 </div>
 </div>
-<p>Looking at the number of words in songs over their release year, we can obtain the following graph for songs between 1970 and 2015. If we model with a linear regression line, we can see a stark decrease in word usage over the decades in song titles. A few reasons why this might be are the need for more unique titles as generic titles for songs have already been taken therefore the usage of more unique and concentrated words; the ease of marketing shorter titled songs; the ease of access to songs via web-streaming and industrialization in production processes resulting in the need of less “refined” titles. Either way, according to the data set, the decrease in number of words over the years is evident. From the 4.0 levels in the 1970s, we reach the 3.4 words per title levels in the 2010s. I have omitted pre-1970 and 2015-2020 data due to less data points during those years.</p>
+<p>Looking at the number of words in songs over their release year, we can obtain the following graph for songs between 1970 and 2015. If we model with a linear regression line, we can see a stark decrease in word usage over the decades in song titles. A few reasons why this might be are the need for more unique titles as generic titles for songs have already been taken therefore the usage of more unique and concentrated words; the ease of marketing shorter titled songs; the ease of access to songs via web-streaming and industrialization in production processes resulting in the need of fewer “refined” titles. Either way, according to the data set, the decrease in number of words over the years is evident. From the 4.0 levels in the 1970s, we reach the 3.4 words per title levels in the 2010s. I have omitted pre-1970 and 2015-2020 data due to fewer data points during those years.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show source code</summary>
@@ -341,22 +343,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>Show source code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>the_songs <span class="ot">&lt;-</span> spotify_songs <span class="sc">|&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(track_name)) <span class="sc">|&gt;</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">the_anyword =</span> <span class="fu">str_detect</span>(<span class="fu">tolower</span>(track_name), <span class="st">"^the</span><span class="sc">\\</span><span class="st">s{1}</span><span class="sc">\\</span><span class="st">w+$"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">the_anyword =</span> <span class="fu">str_detect</span>(<span class="fu">tolower</span>(track_name), <span class="st">"^the</span><span class="sc">\\</span><span class="st">b(?=</span><span class="sc">\\</span><span class="st">s</span><span class="sc">\\</span><span class="st">w+$)"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(the_anyword) <span class="sc">|&gt;</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(playlist_genre) <span class="sc">|&gt;</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">the_songs_numberof =</span> <span class="fu">n</span>())</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(the_songs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">number_of_the_songs =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(number_of_the_songs)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>the_songs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
-  playlist_genre the_songs_numberof
-  &lt;chr&gt;                       &lt;int&gt;
-1 edm                            59
-2 latin                          14
-3 pop                            55
-4 r&amp;b                            39
-5 rap                            51
-6 rock                           64</code></pre>
+  playlist_genre number_of_the_songs
+  &lt;chr&gt;                        &lt;int&gt;
+1 latin                           14
+2 r&amp;b                             39
+3 rap                             51
+4 pop                             55
+5 edm                             59
+6 rock                            64</code></pre>
 </div>
 </div>
 </section>

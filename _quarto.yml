@@ -22,6 +22,8 @@ website:
         href: DataScienceEthics.html
       - text: "CA Traffic Stops"
         href: TrafficStopsAnalysis.html
+      - text: "Songs Text Analysis Presentation"
+        href: SongsTextAnalysisPresentation.html
 
 format:
   html:

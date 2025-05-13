@@ -1,0 +1,108 @@
+---
+title: "Songs Text Analysis Presentation"
+author: "Uras Uyal"
+subtitle: "May 13, 2025 - An analysis of a dataset of songs as found on Spotify"
+format:
+  revealjs:
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Importing Dataset and Libraries
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load('2020-01-21')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 4)
+spotify_songs <- tuesdata$spotify_songs
+library(ggplot2)
+library(stringr)
+library(dplyr)
+```
+
+Data is from the Spotify API via the spotifyr package. There is about. about 5000 songs from 6 main categories (EDM, Latin, Pop, R&B, Rap, & Rock). Credits to Charlie Thompson, Josiah Parry, Donal Phipps, Tom Wolff, and Kaylin Pavlik. Source credited at the end.
+
+## Calculating Average Songs per Album for every Genre
+
+```{r}
+avg_songs_per_album <- spotify_songs |>
+  group_by(playlist_genre, track_album_id) |>
+  summarise(songs_per_album = n()) |>
+  group_by(playlist_genre) |>
+  filter(songs_per_album > 1) |>
+  summarise(avg_songs_per_album = round(mean(songs_per_album), 2)) |>
+  arrange(avg_songs_per_album)
+avg_songs_per_album
+```
+
+## Number of Avg. Songs per Genre
+:::: {style="font-size: 40%;"}
+```{r}
+songs_per_album_per_genre <- spotify_songs |>
+  group_by(playlist_genre, track_album_id) |>
+  summarise(songs_per_album = n()) |>
+  filter(songs_per_album > 1)
+
+ggplot(songs_per_album_per_genre, aes(x = songs_per_album, fill = playlist_genre)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Number of Songs per Album", y = "Number of Instances of Albums", 
+       title = "Albums by Number of Songs Included") +
+  scale_x_continuous(limits = c(1.5, 8), breaks = 0:8) +
+  scale_fill_manual(values = c("red","green","blue","orange","purple","cyan"))
+  
+```
+:::
+
+## Extracting Info About Title Strings
+
+```{r}
+title_lengths <- spotify_songs |>
+  filter(!is.na(track_name)) |>
+  mutate(word_count = str_count(track_name, "\\w+"), title_charlength = str_length(str_extract_all(track_name,"\\w+"))) |> 
+  group_by(playlist_genre) |>
+  summarise(avg_word_count = round(mean(word_count), 2), avg_title_length = round(mean(unlist(title_charlength)), 2), total_songs = n()) |> 
+  arrange(avg_word_count)
+title_lengths
+```
+
+## Avg. Title Length vs. Year
+
+:::: {style="font-size: 40%;"}
+```{r}
+songstemp <- spotify_songs |>
+  filter(!is.na(track_name) & track_name!="") |>
+  mutate(year = as.numeric(substr(track_album_release_date, 1,4)), word_count = str_count(track_name, "\\w+")) |>
+  filter(!is.na(year) & year>=1970 & year<=2015) |>
+  group_by(year) |>
+  summarise(avg_word_count = mean(word_count), total_songs = n())
+
+ggplot(songstemp, aes(x = year, y = avg_word_count)) +
+  geom_point(color = "red", size = 3) + 
+  geom_line(color = "red", size = 1) + 
+  geom_smooth(method = "lm", color = "darkblue") + 
+  labs(x = "Song Release Year", y = "Average Word Count in Song Title",
+       title = "Average Number Words in Songs' Titles vs. their Release Year (1970-2015)")
+```
+:::
+
+## Generic "The ___" Song Titles
+```{r}
+the_songs <- spotify_songs |>
+  filter(!is.na(track_name)) |>
+  mutate(the_anyword = str_detect(tolower(track_name), "^the\\b(?=\\s\\w+$)")) |>
+  filter(the_anyword) |>
+  group_by(playlist_genre) |>
+  summarise(number_of_the_songs = n()) |>
+  arrange(number_of_the_songs)
+the_songs
+```
+
+## Source
+Access at: https://github.com/rfordatascience/tidytuesday/blob/main/data/2020/2020-01-21/readme.md. The source states that the data comes from Spotify’s API via the spotifyr package. Authors of the package are Charlie Thompson, Josiah Parry, Donal Phipps, and Tom Wolff. Kaylin Pavlik had a recent blogpost using the audio features to explore and classify songs. She used the spotifyr package to collect about 5000 songs from 6 main categories (EDM, Latin, Pop, R&B, Rap, & Rock) in creation of this data set. h/t to Jon Harmon & Neal Grantham.
+
+Thank you for your time.
