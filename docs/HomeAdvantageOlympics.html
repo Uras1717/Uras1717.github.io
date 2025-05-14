@@ -160,6 +160,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./TrafficStopsAnalysis.html"> 
 <span class="menu-text">CA Traffic Stops</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./SongsTextAnalysisPresentation.html"> 
+<span class="menu-text">Songs Text Analysis Presentation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://uras1717.shinyapps.io/Resume/"> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/Uras1717"> 
+<span class="menu-text">GitHub</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -232,8 +244,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="hypothesis-and-dataset" class="level1">
 <h1>Hypothesis and Dataset</h1>
 <p>Hypotheses:</p>
-<p>Null Hypothesis: Whether a country hosts the Summer Olympics or not does not have an effect on per capita medal wins for that country.</p>
-<p>Alternative Hypothesis: Whether a country hosts the Summer Olympics or not does have an effect on per capita medal wins for that country (either positively, resulting in an advantage, or negatively, resulting in a disadvantage).</p>
+<p>Null Hypothesis: Whether a country hosts the Summer Olympics or not is not an evident factor for per capita medal wins for that country.</p>
+<p>Alternative Hypothesis: Whether a country hosts the Summer Olympics or not is an evident factor with on per capita medal wins for that country (either positively, resulting in an advantage, or negatively, resulting in a disadvantage).</p>
 <p>Our alternative hypothesis is that the null hypothesis is incorrect; however, in order to draw a possible more precise statistical conclusion, in the event our alternative hypothesis is shown to be true, we will also be calculating 2 different p-values in order to conclude if hosting the summer olympics yields better results on a per participating athlete basis or not (not just that it has a statistical significance).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="st">'2024-08-06'</span>)</span>
@@ -275,24 +287,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Assigning medal point values</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>olympicsdata <span class="ot">&lt;-</span> olympicsdata <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">medal_points =</span> <span class="fu">case_when</span>(medal<span class="sc">==</span><span class="st">"Gold"</span> <span class="sc">~</span> <span class="dv">3</span>, medal<span class="sc">==</span><span class="st">"Silver"</span> <span class="sc">~</span> <span class="dv">2</span>, medal<span class="sc">==</span><span class="st">"Bronze"</span> <span class="sc">~</span> <span class="dv">1</span>, medal<span class="sc">==</span><span class="st">"NA"</span> <span class="sc">~</span> <span class="dv">0</span>, <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>))</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Selecting years from only 1988 to 2016</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>olympicsdata <span class="ot">&lt;-</span> olympicsdata <span class="sc">|&gt;</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1988</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2016</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining a function to change city names into their respective countries (as if they were in 2025) so that we can compare teams and countries for home-field advantage</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>hostcitytocountry <span class="ot">&lt;-</span> <span class="cf">function</span>(olympicsdata, city) {</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  hostcitytocountry <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">city =</span> <span class="fu">c</span>(<span class="st">"Seoul"</span>, <span class="st">"Barcelona"</span>, <span class="st">"Atlanta"</span>, <span class="st">"Sydney"</span>, <span class="st">"Athina"</span>, <span class="st">"Beijing"</span>, <span class="st">"London"</span>, <span class="st">"Rio de Janeiro"</span>),</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">country =</span> <span class="fu">c</span>(<span class="st">"South Korea"</span>, <span class="st">"Spain"</span>, <span class="st">"United States"</span>, <span class="st">"Australia"</span>, <span class="st">"Greece"</span>, <span class="st">"China"</span>, <span class="st">"Great Britain"</span>, <span class="st">"Brazil"</span>))</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  updatedolympicsdata <span class="ot">&lt;-</span> olympicsdata <span class="sc">|&gt;</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(hostcitytocountry, <span class="at">by =</span> <span class="fu">setNames</span>(<span class="st">"city"</span>, city)) <span class="sc">|&gt;</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="sc">!!</span><span class="at">city :=</span> country) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>country) </span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>olympicsdata <span class="ot">&lt;-</span> <span class="fu">hostcitytocountry</span>(olympicsdata, <span class="st">"city"</span>)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>olympicsdata</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">medal_points =</span> <span class="fu">case_when</span>(medal<span class="sc">==</span><span class="st">"Gold"</span> <span class="sc">~</span> <span class="dv">3</span>, medal<span class="sc">==</span><span class="st">"Silver"</span> <span class="sc">~</span> <span class="dv">2</span>, medal<span class="sc">==</span><span class="st">"Bronze"</span> <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                                  medal<span class="sc">==</span><span class="st">"NA"</span> <span class="sc">~</span> <span class="dv">0</span>, <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Selecting years from only 1988 to 2016</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>olympicsdata <span class="ot">&lt;-</span> olympicsdata <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1988</span> <span class="sc">&amp;</span> year <span class="sc">&lt;=</span> <span class="dv">2016</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining a function to change city names into their respective countries (as if they were in</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#2025) so that we can compare teams and countries for home-field advantage</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>hostcitytocountry <span class="ot">&lt;-</span> <span class="cf">function</span>(olympicsdata, city) {</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  hostcitytocountry <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">city =</span> <span class="fu">c</span>(<span class="st">"Seoul"</span>, <span class="st">"Barcelona"</span>, <span class="st">"Atlanta"</span>, <span class="st">"Sydney"</span>, <span class="st">"Athina"</span>, <span class="st">"Beijing"</span>, <span class="st">"London"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>             <span class="st">"Rio de Janeiro"</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">country =</span> <span class="fu">c</span>(<span class="st">"South Korea"</span>, <span class="st">"Spain"</span>, <span class="st">"United States"</span>, <span class="st">"Australia"</span>, <span class="st">"Greece"</span>, <span class="st">"China"</span>, </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Great Britain"</span>, <span class="st">"Brazil"</span>))</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  updatedolympicsdata <span class="ot">&lt;-</span> olympicsdata <span class="sc">|&gt;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(hostcitytocountry, <span class="at">by =</span> <span class="fu">setNames</span>(<span class="st">"city"</span>, city)) <span class="sc">|&gt;</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="sc">!!</span><span class="at">city :=</span> country) <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>country) </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>olympicsdata <span class="ot">&lt;-</span> <span class="fu">hostcitytocountry</span>(olympicsdata, <span class="st">"city"</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>olympicsdata</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 106,268 × 16
       id name     sex     age height weight team  noc   games  year season city 
@@ -314,20 +330,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We now have a data table easier to work with in light of our aim. We will now extract data from this data table to create a separate data table, where we will have the competing team, the average medal points per athlete from that country in a given year of the summer olympics, the country that the host city is in, and the year of the summer olympics. We do this for all 8 hosts between 1988-2016 and their sports teams.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining host countries for easier data use</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>host_countries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"South Korea"</span>, <span class="st">"Spain"</span>, <span class="st">"United States"</span>, <span class="st">"Australia"</span>, <span class="st">"Greece"</span>, <span class="st">"China"</span>, <span class="st">"Great Britain"</span>, <span class="st">"Brazil"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarizing data table based on competing team, calculating the average medal points per athlete per country by summing up number of athletes and averaging out, host city country, and year; and summarizing in a data table organized alphabetically by team country name.</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>final_table <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(host_countries, <span class="cf">function</span>(country) {</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  olympicsdata <span class="sc">|&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(team<span class="sc">==</span>country) <span class="sc">|&gt;</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(team, year, city) <span class="sc">|&gt;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">average_medal_points =</span> <span class="fu">mean</span>(medal_points, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">athletes_per_team =</span> <span class="fu">n_distinct</span>(id), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">average_medal_points_per_athlete =</span> (average_medal_points<span class="sc">/</span>athletes_per_team)) <span class="sc">|&gt;</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(team, average_medal_points_per_athlete, city, year) </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(team)</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>final_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>host_countries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"South Korea"</span>, <span class="st">"Spain"</span>, <span class="st">"United States"</span>, <span class="st">"Australia"</span>, <span class="st">"Greece"</span>, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"China"</span>, <span class="st">"Great Britain"</span>, <span class="st">"Brazil"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarizing data table based on competing team, calculating the average medal points per athlete</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#per country by summing up number of athletes and averaging out, host city country, and year;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#and summarizing in a data table organized alphabetically by team country name.</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>final_table <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(host_countries, <span class="cf">function</span>(country) {</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  olympicsdata <span class="sc">|&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(team<span class="sc">==</span>country) <span class="sc">|&gt;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(team, year, city) <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">average_medal_points =</span> <span class="fu">mean</span>(medal_points, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">athletes_per_team =</span> <span class="fu">n_distinct</span>(id), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">average_medal_points_per_athlete =</span> (average_medal_points<span class="sc">/</span>athletes_per_team)) <span class="sc">|&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(team, average_medal_points_per_athlete, city, year) </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(team)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>final_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 64 × 4
    team      average_medal_points_per_athlete city           year
@@ -362,21 +381,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculating the average medal points per athlete, regardless of if country is host or not</span></span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>overall_average <span class="ot">&lt;-</span> final_table <span class="sc">|&gt;</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">overall_average_medal_points =</span> <span class="fu">mean</span>(average_medal_points_per_athlete, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(overall_average_medal_points)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting each country's scatterplot, non-host data points small black, host data points triangle, and average medal points per athlete lines for both overall and host-only</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(final_table, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> average_medal_points_per_athlete, <span class="at">group =</span> team, <span class="at">color =</span> team)) <span class="sc">+</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.2</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>) <span class="sc">+</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">shape =</span> host_or_not), <span class="at">size =</span> <span class="fu">ifelse</span>(final_table<span class="sc">$</span>host_or_not<span class="sc">==</span><span class="st">"Yes"</span>, <span class="fl">5.2</span>, <span class="dv">2</span>), <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> </span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Yes"</span> <span class="ot">=</span> <span class="dv">17</span>, <span class="st">"No"</span> <span class="ot">=</span> <span class="dv">16</span>)) <span class="sc">+</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>( <span class="st">"red"</span>, <span class="st">"red"</span>)) <span class="sc">+</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span><span class="cf">function</span>(a) <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">" "</span>, a)) <span class="sc">+</span> </span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, </span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Medal Points per Athlete"</span>, </span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Medal Points per Athlete for Host Countries (1988-2016)"</span>) <span class="sc">+</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> hosts_average, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> overall_average, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">overall_average_medal_points =</span> <span class="fu">mean</span>(average_medal_points_per_athlete,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(overall_average_medal_points)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting each country's scatterplot, non-host data points small black, host data points</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#triangle, and average medal points per athlete lines for both overall and host-only</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(final_table, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(year), <span class="at">y =</span> average_medal_points_per_athlete, <span class="at">group =</span> team,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                        <span class="at">color =</span> team)) <span class="sc">+</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.2</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>) <span class="sc">+</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">shape =</span> host_or_not), <span class="at">size =</span> <span class="fu">ifelse</span>(final_table<span class="sc">$</span>host_or_not<span class="sc">==</span><span class="st">"Yes"</span>, <span class="fl">5.2</span>, <span class="dv">2</span>),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Yes"</span> <span class="ot">=</span> <span class="dv">17</span>, <span class="st">"No"</span> <span class="ot">=</span> <span class="dv">16</span>)) <span class="sc">+</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>( <span class="st">"red"</span>, <span class="st">"red"</span>)) <span class="sc">+</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels=</span><span class="cf">function</span>(a) <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">."</span>, <span class="st">" "</span>, a)) <span class="sc">+</span> </span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, </span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Average Medal Points per Athlete"</span>, </span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Medal Points per Athlete for Host Countries (1988-2016)"</span>) <span class="sc">+</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> hosts_average, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> overall_average, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -400,7 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 0.0007362636</code></pre>
 </div>
 </div>
-<p>This means that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year, according to our data set.</p>
+<p>This means that athletes who are qualified to the Olympics are 44.7% more likely (we take the ratio between what the black line is showing with the red), on average, to score a medal if their country is <i>not</i> the host for that year, according to our data set.</p>
 </section>
 <section id="permutation-test" class="level1">
 <h1>Permutation Test</h1>
@@ -463,35 +487,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculating p-values for both an advantage condition or a disadvantage condition</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>perm_stats <span class="sc">|&gt;</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="st">"Advantage"</span>, <span class="at">p_value_avg =</span> <span class="fu">mean</span>(perm_avg_diff <span class="sc">&gt;</span> points_avg_diff))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 2
-  `"Advantage"` p_value_avg
-  &lt;chr&gt;               &lt;dbl&gt;
-1 Advantage           0.989</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>perm_stats <span class="sc">|&gt;</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="st">"Disadvantage"</span>, <span class="at">p_value_avg =</span> <span class="fu">mean</span>(perm_avg_diff <span class="sc">&lt;</span> points_avg_diff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="st">"Disadvantage"</span>, <span class="at">p_value_avg =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">mean</span>(perm_avg_diff <span class="sc">&lt;</span> points_avg_diff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   `"Disadvantage"` p_value_avg
   &lt;chr&gt;                  &lt;dbl&gt;
-1 Disadvantage          0.0107</code></pre>
+1 Disadvantage          0.0214</code></pre>
 </div>
 </div>
-<p>Please note since our hypothesis tests for both an advantage condition or disadvantage condition, we have two p-values for either relationship. In our case, looking at the values, we can conclude that there is a <i>disadvantage</i> relationship in our hypothesis, which we will get to now.</p>
+<p>Please note since our hypothesis tests for both an advantage condition or disadvantage condition, we have a two-sided distribution. In our case, looking at the values, we can conclude that there is a <i>disadvantage</i> relationship in our hypothesis, which we will get to now. Since we have a two-sided distribution, we double the value of our p-value.</p>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p>From our data, we see that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. Furthermore, according to our p-value calculation, our alternative hypothesis is shown in the <i>disadvantaged</i> direction, as we have reached a p-value of 0.0107, as this is less than the p-value of 0.05 generally accepted by the modern-day scientific institution (2025). This p-value looks at the probability that our data set might have randomly been on the <i>left</i> of the red line in the above graph. The advantaged direction would have looked at the right of the red line, which would obviously been an unacceptable conclusion.</p>
+<p>From our data, we see that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. Furthermore, according to our p-value calculation, our alternative hypothesis is shown in the <i>disadvantaged</i> direction, as we have reached a p-value of 0.0214, as this is less than the p-value of 0.05 generally accepted by the modern-day scientific institution (2025). This p-value looks at the probability that our data set might have randomly been on the <i>left</i> of the red line in the above graph. The advantaged direction would have looked at the right of the red line, which would obviously been an unacceptable conclusion.</p>
 <p>To reiterate, we show that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. This might seem counter-intuitive at first, as most research shows that in athletics a “Home Advantage” is quite significant. Factors such as fan support, fan or bureaucratic pressure on judges/referees, similar climate/sports hall conditions, similar cuisine, possible non-temporary stays during the competition all favor the home team. So, what might be the cause that we actually seem to have a “Home <i>Disadvantage</i>”?</p>
 <p>We had established that our analysis was on a per athlete basis. It is most likely true, that all these factors are noticeably helping the home team. However, the home team also is generally allowed to bring a very significant amount of more athletes from its own nation than it can send abroad for another olympic competition, per se. This is possibly a combination of wildcard entrees being awarded to the host more often, pre-determined extra quotas for the host, and a big relief in budgeting for sponsoring athletes domestically and not internationally.</p>
 <p>Of course, assuming the supply of world-class athletes are limited, the home country will fill the rest of the spots with less-likely-world-class athletes. This likely will result in overall worse performance by those athletes. Furthermore, the number of medals stays the same regardless of how many athletes from a country compete. For all these reasons, due to the <i>average</i> quality of athletes going down as a result of lower qualifying standards due to a supply of more available positions, on a <i>per athlete basis</i>, hosts of Summer Olympics events are disadvantaged according to our data set. Our closest estimate, according to the cross-competitions of the 8 Summer Olympics hosts from 1988 to 2016 over this time interval, that athletes from these countries during this interval were 44.7% more likely, on average, to score a medal if their country was <i>not</i> the host for that year.</p>
-<p>We have shown a statistical significance showing our alternate hypothesis that hosting a Summer Olympics does have a negative effect on the number medals earned per participating athlete capita. This is backed by a p-value of 0.0107.</p>
+<p>We have shown a statistical significance showing our alternate hypothesis that hosting a Summer Olympics is a negative factor on the number medals earned per participating athlete capita. This is backed by a p-value of 0.0107.</p>
 </section>
 <section id="sources" class="level1">
 <h1>Sources</h1>
-<p>TidyTuesdayR package obtained from https://github.com/rfordatascience/tidytuesday/blob/main/data/2024/2024-08-06/readme.md. Provided by ‘jonthegeek’, published on 2024-08-06 borrowing from previously published data also via TidyTuesday (2021-07-27).</p>
+<p>TidyTuesdayR package obtained from https://github.com/rfordatascience/tidytuesday/blob/main/data/2024/2024-08-06/readme.md. Provided by ‘jonthegeek’, published on 2024-08-06 borrowing originally from https://www.sports-reference.com/ via Kaggle.</p>
 <p>Coding help obtained from: https://ds002r-fds.netlify.app/slides/2025-03-26-perm. With many thanks to Prof.&nbsp;Hardin.</p>
 
 

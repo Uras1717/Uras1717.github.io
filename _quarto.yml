@@ -24,6 +24,11 @@ website:
         href: TrafficStopsAnalysis.html
       - text: "Songs Text Analysis Presentation"
         href: SongsTextAnalysisPresentation.html
+      - text: Resume
+        href: https://uras1717.shinyapps.io/Resume/
+      - text: GitHub
+        href: https://github.com/Uras1717
+        
 
 format:
   html:

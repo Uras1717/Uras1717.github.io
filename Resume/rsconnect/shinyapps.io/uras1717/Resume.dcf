@@ -1,0 +1,12 @@
+name: Resume
+title: Resume
+username: uras1717
+account: uras1717
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14754157
+bundleId: 10282595
+url: https://uras1717.shinyapps.io/Resume/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
