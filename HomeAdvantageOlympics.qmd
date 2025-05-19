@@ -145,13 +145,20 @@ Shown with the dashed black line on the graph, if we average out all data points
 overall_average
 ```
 
-Shown with the dashed red line on the graph, if we average out all data points (whether the country was host or not), we get an average medal point per athlete of:
+Shown with the dashed red line on the graph, if we average out all data points when the country was host, we get an average medal point per athlete for host countries of:
 
 ```{r}
 hosts_average
 ```
 
-This means that athletes who are qualified to the Olympics are 44.7% more likely (we take the ratio between what the black line is showing with the red), on average, to score a medal if their country is <i>not</i> the host for that year, according to our data set.
+
+If we take the ratio between average medal point per athlete in general and average medal point per athlete for host countries we get:
+
+```{r}
+overall_average/hosts_average
+```
+
+This means that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year, according to our data set.
 
 
 # Permutation Test
@@ -172,40 +179,44 @@ In order to do a permutation test, we now take the variables host_or_not, tellin
 # Code heavily helped by DS002 Lecture Notes, cited down below
 
 # Creating the permutation test data
-perm_data <- function(rep, data){
-  data |> 
-    select(host_or_not, average_medal_points_per_athlete) |> 
-    mutate(math_perm = sample(average_medal_points_per_athlete, replace = FALSE)) |> 
-    group_by(host_or_not) |> 
-    summarize(points_avg = mean(average_medal_points_per_athlete),
-              perm_avg = mean(math_perm)) |> 
-    summarize(points_avg_diff = diff(points_avg),
-              perm_avg_diff = diff(perm_avg),
-              rep = rep)
-}
+perm_data <- function(rep, data){data |> 
+    group_by(city) |> 
+    mutate(indiv_permutation = sample(host_or_not, replace = FALSE), .groups = "drop") |> 
+    group_by(indiv_permutation) |> 
+    summarize(average_permutation = mean(average_medal_points_per_athlete), .groups = "drop") |> 
+    summarize(differences_average_permutation = diff(average_permutation), rep = rep)}
+
+# Creating data table for differences between host/not host countries for a given olympics, as advised by Prof. Hardin to permute **within** the team
+differences_data_table <- final_table |> 
+  group_by(host_or_not) |> 
+  summarize(average_points = mean(average_medal_points_per_athlete), .groups = "drop") |> 
+  summarize(average_points_diff = diff(average_points)) |> pull(average_points_diff)
 
 # Setting seed and shuffling 10000 times
 set.seed(4747)
-perm_stats <- map(c(1:10000), perm_data, data = final_table) |> 
-  list_rbind() 
+perm_stats <- map(1:10000, perm_data, data = final_table) |> 
+  list_rbind()
 
 # Plotting it on a histogram with red lines showing our dataset's case testing for extremes.
 perm_stats |> 
-  ggplot(aes(x = perm_avg_diff)) + 
-  geom_histogram() + 
-  geom_vline(aes(xintercept = points_avg_diff), color = "red")
+  ggplot(aes(x = differences_average_permutation)) + 
+  geom_histogram() +
+  geom_vline(xintercept = differences_data_table, color = "red") +
+  labs(title = "Permutation Test for Host Advantage/Disadvantage by Differences in Averages for Host or Not Host Countries",
+       x = "Differences in Averages",
+       y = "Frequency")
 
-# Calculating p-values for both an advantage condition or a disadvantage condition
+# Calculating p-values (turns out to be disadvantage)
 perm_stats |> 
-  summarize("Disadvantage", p_value_avg = 2 * mean(perm_avg_diff < points_avg_diff))
-
+  summarize("Disadvantage", p_value = 2 * mean(abs(differences_average_permutation) >= abs(differences_data_table)))
 ```
+
 
 Please note since our hypothesis tests for both an advantage condition or disadvantage condition, we have a two-sided distribution. In our case, looking at the values, we can conclude that there is a <i>disadvantage</i> relationship in our hypothesis, which we will get to now. Since we have a two-sided distribution, we double the value of our p-value.
 
 # Conclusion
 
-From our data, we see that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. Furthermore, according to our p-value calculation, our alternative hypothesis is shown in the <i>disadvantaged</i> direction, as we have reached a p-value of 0.0214, as this is less than the p-value of 0.05 generally accepted by the modern-day scientific institution (2025). This p-value looks at the probability that our data set might have randomly been on the <i>left</i> of the red line in the above graph. The advantaged direction would have looked at the right of the red line, which would obviously been an unacceptable conclusion.
+From our data, we see that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. Furthermore, according to our p-value calculation, our alternative hypothesis is shown in the <i>disadvantaged</i> direction, as we have reached a p-value of 0.033, as this is less than the p-value of 0.05 generally accepted by the modern-day scientific institution (2025). This p-value looks at the probability that our data set might have randomly been on the <i>left</i> of the red line in the above graph. The advantaged direction would have looked at the right of the red line, which would obviously been an unacceptable conclusion.
 
 To reiterate, we show that athletes who are qualified to the Olympics are 44.7% more likely, on average, to score a medal if their country is <i>not</i> the host for that year. This might seem counter-intuitive at first, as most research shows that in athletics a "Home Advantage" is quite significant. Factors such as fan support, fan or bureaucratic pressure on judges/referees, similar climate/sports hall conditions, similar cuisine, possible non-temporary stays during the competition all favor the home team. So, what might be the cause that we actually seem to have a "Home <i>Disadvantage</i>"?
 
