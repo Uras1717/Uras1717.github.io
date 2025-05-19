@@ -10,7 +10,7 @@ execute:
   message: false
 ---
 
-This mini-project analyzes trends in number of objects Russia and China have launched into space since 1957. Data is provided by the TidyTuesday library, which accessed the specific dataset from the United Nations Office for Outer Space Affairs (2024) helped by Our World in Data.
+This mini-project analyzes trends in number of objects Russia and China have launched into space since 1957. Data is provided by the TidyTuesday library, which accessed the specific dataset from the United Nations Office for Outer Space Affairs (2024) helped by Our World in Data. 
 
 ```{r}
 library(tidyverse)

@@ -35,7 +35,7 @@ avg_songs_per_album <- spotify_songs |>
 avg_songs_per_album
 ```
 
-Now, let's plot the number of songs per album and their instances detailing genres. What this graph tells us different to the data table above is the quickness in decrease of number of instances as number of songs per album increases. Expectedly, EDM, with the red bars, decreases quite fast compared to other genders as we go more right on the x-axis. Rap has quite a slower decreasing curve. Perhaps another color one might catch is orange, which constitutes to R&B, having quite a close curve to that of rap. If we look at our data table above, we see that R&B has a value that is quite close to rap, which fulfills our expectations.
+Now, let's plot the number of songs per album and their instances detailing genres. What this graph tells us different to the data table above is the quickness in decrease of number of instances as number of songs per album increases. Expectedly, EDM, with the red bars, decreases quite fast compared to other genders as we go more right on the x-axis. Rap has quite a slower decreasing curve. Perhaps another color one might catch is orange, which constitutes to R&B, having quite a close curve to that of rap. If we look at our data table above, we see that R&B has a value that is quite close to rap, which fulfills our expectations. 
 
 ```{r}
 songs_per_album_per_genre <- spotify_songs |>

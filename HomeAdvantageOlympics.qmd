@@ -213,7 +213,7 @@ perm_stats |>
 ```
 
 
-Please note since our hypothesis tests for both an advantage condition or disadvantage condition, we have a two-sided distribution. In our case, looking at the values, we can conclude that there is a <i>disadvantage</i> relationship in our hypothesis, which we will get to now. Since we have a two-sided distribution, we double the value of our p-value.
+Please note since our hypothesis tests for both an advantage condition or disadvantage condition, we have a two-sided distribution. In our case, looking at the values, we can conclude that there is a <i>disadvantage</i> relationship in our hypothesis, which we will get to now. Since we have a two-sided distribution, we double the value of our p-value. 
 
 # Conclusion
 

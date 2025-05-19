@@ -196,7 +196,7 @@ ggplot() +
   theme_light() +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.85))
 ```
-With this graph, we can see in more detail the difference between Bay Area cities (shown in blue) vs. SD and Stockton (shown in red). However, this graph also makes us see if there is any correlation between time passing and punishment severity.
+With this graph, we can see in more detail the difference between Bay Area cities (shown in blue) vs. SD and Stockton (shown in red). However, this graph also makes us see if there is any correlation between time passing and punishment severity.  
 
 We see that both Bay Area cities and SD+Stockton peak in April or May, and then gradually go down in punishment severity. This is not clear or substantial enough that we can say that this is not a result of just pure chance, but it is possible that something made punishments more severe in April-May 2014 and made them gradually decline. Possible, fully hypotethical explanations may include events going on around the country or new policing regulations in CA or the US around this time. Or, perhaps police become most comfortable hitting their citation quota around 4-5 months in and then slowly decline giving away citations, on average, if they need not fill that quota anymore or are making adequate progress. These are extremely hypotethical explanations to the very vague and non-substantial relationship between months passing and our ratio, and cannot be validated without seeing other years except 2014 or without a permutation test or without *a lot more* data. Therefore, we can say that there is no clear connection between months passing and our tolerance/severity in traffic stops ratio.
 
