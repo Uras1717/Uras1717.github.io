@@ -186,7 +186,8 @@ perm_data <- function(rep, data){data |>
     summarize(average_permutation = mean(average_medal_points_per_athlete), .groups = "drop") |> 
     summarize(differences_average_permutation = diff(average_permutation), rep = rep)}
 
-# Creating data table for differences between host/not host countries for a given olympics, as advised by Prof. Hardin to permute **within** the team
+# Creating data table for differences between host/not host countries for a given olympics, as 
+#advised by Prof. Hardin to permute **within** the team
 differences_data_table <- final_table |> 
   group_by(host_or_not) |> 
   summarize(average_points = mean(average_medal_points_per_athlete), .groups = "drop") |> 
@@ -202,7 +203,7 @@ perm_stats |>
   ggplot(aes(x = differences_average_permutation)) + 
   geom_histogram() +
   geom_vline(xintercept = differences_data_table, color = "red") +
-  labs(title = "Permutation Test for Host Advantage/Disadvantage by Differences in Averages for Host or Not Host Countries",
+  labs(title = "Permutation Test for Host Advantage/Disadvantage by Differences in Averages",
        x = "Differences in Averages",
        y = "Frequency")
 
